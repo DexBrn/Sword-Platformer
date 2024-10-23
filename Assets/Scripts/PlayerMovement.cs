@@ -44,11 +44,11 @@ public class PlayerMovement : MonoBehaviour
 
         //Moving Camera
         //transform.localRotation = Quaternion.Euler(-MouseRotate.y, MouseRotate.x, 0);
-        //transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
+        transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
         Camera.localRotation = Quaternion.Euler(-MouseRotate.y, 0, 0);
 
         //Moving Player
-        //rb.velocity = new Vector3(Horizontal * MoveSpeed, rb.velocity.y, Vertical * MoveSpeed);
+        //rb.velocity = new Vector3(Horizontal * MoveSpeed, rb.velocity.y, Vertical * MoveSpeed); - old
         transform.position += transform.forward * Vertical * (MoveSpeed / 100);
         transform.position += transform.right * Horizontal * (MoveSpeed / 100);
 
@@ -58,10 +58,18 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
         }
 
-        while (Input.GetButtonDown("Slide"))
+        if (Input.GetButtonDown("Slide"))
         {
-            transform.localRotation = Quaternion.Euler(-27, transform.rotation.y, transform.rotation.z);
+            //StartCoroutine(Slide());
         }
+
+        if (Input.GetButton("Slide"))
+        {
+
+            transform.localRotation = Quaternion.Euler(-27, MouseRotate.x, transform.rotation.z);
+            Camera.localRotation = Quaternion.Euler(-MouseRotate.y + 20, 0, 0);
+        }
+
 
 
 
@@ -76,13 +84,14 @@ public class PlayerMovement : MonoBehaviour
     
     IEnumerator Slide()
     {
-        
-        
         while (Input.GetButtonDown("Slide"))
         {
+
             yield return new WaitForSeconds(0.1f);
             transform.localRotation = Quaternion.Euler(-27, transform.rotation.y, transform.rotation.z);
         }
+        
+        
 
 
     }
