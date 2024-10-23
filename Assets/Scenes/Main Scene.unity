@@ -313,6 +313,9 @@ MonoBehaviour:
     m_Bits: 64
   Camera: {fileID: 963194228}
   MouseRotate: {x: 0, y: 0}
+  SlideYScale: 0.5
+  MaxSlideTime: 0.75
+  SlideForce: 200
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

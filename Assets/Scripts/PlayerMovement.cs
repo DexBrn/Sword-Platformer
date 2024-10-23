@@ -16,11 +16,28 @@ public class PlayerMovement : MonoBehaviour
     
     public Vector2 MouseRotate;
 
+    [Header("Slide")]
+    public float SlideYScale = 0.5f;
+    private float StartYScale;
+    public bool IsSliding = false;
+
+    public float MaxSlideTime;
+    public float SlideForce;
+    private float SlideTimer;
+
+    float Horizontal;
+    float Vertical;
+
+    
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        StartYScale = transform.localScale.y;
     }
 
     // Update is called once per frame
@@ -43,14 +60,15 @@ public class PlayerMovement : MonoBehaviour
 
 
         //Moving Camera
-        //transform.localRotation = Quaternion.Euler(-MouseRotate.y, MouseRotate.x, 0);
         transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
         Camera.localRotation = Quaternion.Euler(-MouseRotate.y, 0, 0);
 
         //Moving Player
-        //rb.velocity = new Vector3(Horizontal * MoveSpeed, rb.velocity.y, Vertical * MoveSpeed); - old
         transform.position += transform.forward * Vertical * (MoveSpeed / 100);
         transform.position += transform.right * Horizontal * (MoveSpeed / 100);
+
+
+
 
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
@@ -58,24 +76,62 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
         }
 
-        if (Input.GetButtonDown("Slide"))
+        
+
+        if (Input.GetButtonDown("Slide") && (Vertical != 0 || Horizontal != 0))
         {
-            //StartCoroutine(Slide());
+            StartSlide();
+            //transform.localRotation = Quaternion.Euler(-27, MouseRotate.x, transform.rotation.z);
+            
+            
         }
 
-        if (Input.GetButton("Slide"))
+        if (Input.GetButtonUp("Slide") && IsSliding)
         {
-
-            transform.localRotation = Quaternion.Euler(-27, MouseRotate.x, transform.rotation.z);
-            Camera.localRotation = Quaternion.Euler(-MouseRotate.y + 20, 0, 0);
+            StopSlide();
         }
-
-
 
 
     }
 
     
+
+
+    private void StartSlide()
+    {
+        IsSliding = true;
+
+        transform.localScale = new Vector3(transform.localScale.x, SlideYScale, transform.localScale.z);
+        rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+
+        SlideTimer = MaxSlideTime;
+    }
+
+    private void StopSlide()
+    {
+        IsSliding = false;
+        transform.localScale = new Vector3(transform.localScale.x, StartYScale, transform.localScale.z);
+    }
+
+    private void SlidingMovement()
+    {
+        Vector3 InputDirection = transform.forward * Vertical + transform.right * Horizontal;
+
+        //rb.AddForce(InputDirection.normalized * SlideForce, ForceMode.Force);
+        rb.AddForce(transform.forward * SlideForce, ForceMode.Force);
+        SlideTimer -= Time.deltaTime;
+
+        if (SlideTimer <= 0)
+        {
+            IsSliding = false;
+            StopSlide();
+
+
+        }
+    }
+
+
+
     bool IsGrounded()
     {
         return Physics.CheckSphere(GroundCheck.position, 0.5f, GroundLayer);
@@ -94,6 +150,15 @@ public class PlayerMovement : MonoBehaviour
         
 
 
+    }
+
+
+    private void FixedUpdate()
+    {
+        if (IsSliding)
+        {
+            SlidingMovement();
+        }
     }
 
 
