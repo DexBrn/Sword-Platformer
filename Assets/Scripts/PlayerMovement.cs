@@ -74,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
+            //rb.AddForce(transform.forward * SlideForce / 2, ForceMode.Force);
         }
 
         
@@ -90,6 +91,16 @@ public class PlayerMovement : MonoBehaviour
         {
             StopSlide();
         }
+
+
+
+        if (transform.position.y < -20) 
+        {
+            transform.position = new Vector3(0, 10, 0);
+        
+        
+        }
+
 
 
     }
