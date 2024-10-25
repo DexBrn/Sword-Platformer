@@ -1333,8 +1333,8 @@ MonoBehaviour:
   MaxWallRun: 1.5
   WallCheckDistance: 0.7
   MinJumpHeight: 2
-  WallJumpUpForce: 400
-  WallJumpSideForce: 300
+  WallJumpUpForce: 150
+  WallJumpSideForce: 125
   IsWallRunning: 0
 --- !u!1 &705507993
 GameObject:
