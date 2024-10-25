@@ -1,6 +1,8 @@
 using Microsoft.Win32.SafeHandles;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform Camera;
     
     public Vector2 MouseRotate;
+    public Vector3 CameraStartPos;
 
     [Header("Slide")]
     public float SlideYScale = 0.5f;
@@ -28,19 +31,39 @@ public class PlayerMovement : MonoBehaviour
     float Horizontal;
     float Vertical;
 
+
+    [Header("Wall Run")]
+    public LayerMask WallRunWall;
+    public float WallRunForce;
+    public float MaxWallRun;
+    private float WallRunTimer;
+
+    public float WallCheckDistance;
+    public float MinJumpHeight;
+    private RaycastHit LeftWallHit;
+    private RaycastHit RightWallHit;
+    private bool WallLeft;
+    private bool WallRight;
+
+    public float WallJumpUpForce;
+    public float WallJumpSideForce;
+
+    public bool IsWallRunning;
+   
+    ///////////////////////////////////////
     
 
 
-
-    // Start is called before the first frame update
+   
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         StartYScale = transform.localScale.y;
+        CameraStartPos = Camera.localPosition;
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         float Horizontal = Input.GetAxis("Horizontal");
@@ -70,14 +93,14 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
+        //Jump
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
-            //rb.AddForce(transform.forward * SlideForce / 2, ForceMode.Force);
+            //rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
+            rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
         }
 
-        
+        //Slide
 
         if (Input.GetButtonDown("Slide") && (Vertical != 0 || Horizontal != 0))
         {
@@ -93,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-
+        //Respawn
         if (transform.position.y < -20) 
         {
             transform.position = new Vector3(0, 10, 0);
@@ -102,6 +125,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
+        CheckForWall();
+        wallRunState();
+
+
+        
 
     }
 
@@ -122,6 +150,7 @@ public class PlayerMovement : MonoBehaviour
     {
         IsSliding = false;
         transform.localScale = new Vector3(transform.localScale.x, StartYScale, transform.localScale.z);
+        
     }
 
     private void SlidingMovement()
@@ -149,20 +178,13 @@ public class PlayerMovement : MonoBehaviour
 
     }
     
-    IEnumerator Slide()
+
+    private void CheckForWall()
     {
-        while (Input.GetButtonDown("Slide"))
-        {
-
-            yield return new WaitForSeconds(0.1f);
-            transform.localRotation = Quaternion.Euler(-27, transform.rotation.y, transform.rotation.z);
-        }
         
-        
-
-
+        WallLeft = Physics.Raycast(transform.position, -transform.right, out LeftWallHit, WallCheckDistance, WallRunWall);
+        WallRight = Physics.Raycast(transform.position, transform.right, out RightWallHit, WallCheckDistance, WallRunWall);
     }
-
 
     private void FixedUpdate()
     {
@@ -170,7 +192,120 @@ public class PlayerMovement : MonoBehaviour
         {
             SlidingMovement();
         }
+
+        if (IsWallRunning)
+        {
+            WallRunMovement();
+        }
+
+
     }
 
 
+
+    private void wallRunState()
+    {
+        
+        if((WallLeft || WallRight))//&& Vertical > 0 && !IsGrounded())
+        {
+            
+            if (!IsWallRunning)
+            {
+                
+                StartWallRun();
+            }
+            if (Input.GetButtonDown("Jump")) WallJump();
+            
+        }
+        else
+        {
+            if (IsWallRunning)
+            {
+                
+                StopWallRun();
+                rb.useGravity = true;
+            }
+        }
+
+    }
+
+    private void StartWallRun()
+    {
+        IsWallRunning = true;
+        if (WallRight)
+        {
+            Camera.position = new Vector3(Camera.position.x + 3, Camera.position.y, Camera.position.z);
+        }
+    }
+
+    private void WallRunMovement()
+    {
+        rb.useGravity = false;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+
+        Vector3 WallNormal = WallRight ? RightWallHit.normal : LeftWallHit.normal;
+        Vector3 WallForward = Vector3.Cross(WallNormal, transform.up);
+
+        
+
+        if ((transform.forward - WallForward).magnitude > (transform.forward - -WallForward).magnitude)
+        {
+            WallForward = -WallForward;
+        }
+        rb.AddForce(WallForward * WallRunForce, ForceMode.Force);
+
+        if (!(WallLeft && Horizontal > 1) && !(WallRight && Horizontal < 0))
+        {
+            rb.AddForce(-WallNormal * 100, ForceMode.Force);
+            
+        }
+
+
+    }
+
+    private void StopWallRun()
+    { 
+        IsWallRunning=false;
+        if (Camera.position != CameraStartPos)
+        {
+
+            Camera.localPosition = CameraStartPos;
+        }
+    }
+
+    private void WallJump()
+    {
+        print("Try to wall jump");
+        Vector3 WallNormal = WallRight ? RightWallHit.normal : LeftWallHit.normal;
+
+        Vector3 ForceToApply = transform.up * WallJumpUpForce + WallNormal * WallJumpSideForce;
+
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(ForceToApply, ForceMode.Impulse);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
