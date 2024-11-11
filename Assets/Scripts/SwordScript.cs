@@ -2,10 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+//using Unity.VisualScripting;
 
 public class SwordScript : MonoBehaviour
 {
     Rigidbody rb;
+
+    [Header("Basic Attack")]
+    public Transform BasicHitbox;
+    public float AttackDuration;
+    float MaxAttackDuration;
+    public float AttackCooldown;
+    float MaxAttackCooldown;
+    bool CanAttack = true;
+    bool IsSwinging = false;
+
 
     [Header("Sword Dash")]
     public float DashFowardPower;
@@ -23,11 +34,53 @@ public class SwordScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         MaxDashCoolDown = DashCoolDown;
+        MaxAttackCooldown = AttackCooldown;
+        MaxAttackDuration = AttackDuration;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        /////// Basic Attack ///////
+        ///
+
+        if (!CanAttack)
+        {
+            AttackCooldown -= Time.deltaTime;
+            if (AttackCooldown < 0)
+            {
+                CanAttack = true;
+                AttackCooldown = MaxAttackCooldown;
+            }
+
+
+        }
+
+        if (IsSwinging)
+        {
+            AttackDuration -= Time.deltaTime;
+            if (AttackDuration < 0)
+            {
+                IsSwinging = false;
+                BasicHitbox.GetComponent<Collider>().enabled = false;
+                AttackDuration = MaxAttackDuration;
+            }
+        }
+
+
+        if (Input.GetMouseButtonDown(0) && CanAttack && !IsSwinging)
+        {
+            BasicHitbox.GetComponent<Collider>().enabled = true;
+            IsSwinging = true;
+            CanAttack = false;
+        }
+
+        
+
+
+
+        /////// Dash Logic ///////
 
         if (CanDash == false)
         {
@@ -52,8 +105,8 @@ public class SwordScript : MonoBehaviour
             DashCharge += Time.deltaTime;
             
             
-            BladeOutline.OutlineWidth += DashCharge / 100;
-            HandleOutline.OutlineWidth += DashCharge / 100;
+            BladeOutline.OutlineWidth += Time.deltaTime * 3;
+            HandleOutline.OutlineWidth += Time.deltaTime * 3;
 
             if (DashCharge > 1)
             {
@@ -85,6 +138,8 @@ public class SwordScript : MonoBehaviour
         {
             rb.AddForce(((transform.forward * DashFowardPower) + (transform.up * DashUpPower)) * (DashCharge / 1.5f), ForceMode.Impulse);
             CanDash = false;
+            BasicHitbox.GetComponent<Collider>().enabled = true;
+            IsSwinging = true;
             DashCoolDown = MaxDashCoolDown;
             DashCharge = 1;
             BladeOutline.OutlineColor = new Color(0, 255, 250);
@@ -93,7 +148,12 @@ public class SwordScript : MonoBehaviour
             HandleOutline.OutlineWidth = 4;
         }
 
+
         
 
     }
+
+    
+
+
 }

@@ -12,6 +12,7 @@ public class Timer : MonoBehaviour
     public LayerMask StopTimerMask;
     public float BestTime;
     public TMP_Text LeaderboardText;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +32,7 @@ public class Timer : MonoBehaviour
         if (IsStarting())
             StartTimer();
 
-        if (IsEnding() || transform.position.y <= -20)
+        if (IsEnding() || transform.position.y <= -19)
             TimerRunning = false;
 
 
@@ -49,6 +50,14 @@ public class Timer : MonoBehaviour
 
     void StartTimer()
     {
+        GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        int EnemyCount = Enemies.Length;
+        for (int i = 0; i < EnemyCount; i++)
+        {
+            
+            Enemies[i].GetComponent<Renderer>().enabled = true;
+            Enemies[i].GetComponent<Collider>().enabled = true;
+        }
         TimerRunning = true;
         Timed = 0;
     }

@@ -171,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (OnSlope())
         {
-            print("On Slop");
+            //print("On Slop");
             rb.AddForce(GetSlopeMoveDirection() * MoveSpeed * 20, ForceMode.Force);
 
             if (rb.velocity.y < 0 && ExitingSlope == true)
