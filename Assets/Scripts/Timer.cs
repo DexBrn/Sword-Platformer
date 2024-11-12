@@ -12,11 +12,15 @@ public class Timer : MonoBehaviour
     public LayerMask StopTimerMask;
     public float BestTime;
     public TMP_Text LeaderboardText;
-    
+    public float CompletedDisplayTime;
+    float MaxDisplayTime;
+    public TMP_Text CompletedText;
+    float ExtraTime;
 
     // Start is called before the first frame update
     void Start()
     {
+        MaxDisplayTime = CompletedDisplayTime;
         if (PlayerPrefs.GetFloat("FastestTime") != 0) ;
             LeaderboardText.text = ("Best Time:    " + Mathf.Round(PlayerPrefs.GetFloat("FastestTime") * 1000) / 1000);
             BestTime = PlayerPrefs.GetFloat("FastestTime");
@@ -34,13 +38,18 @@ public class Timer : MonoBehaviour
         if (IsStarting())
             StartTimer();
 
-        if (IsEnding() || transform.position.y <= -19)
+        if (transform.position.y <= -19 || Input.GetKeyDown(KeyCode.R))
+        {
             TimerRunning = false;
+            transform.position = new Vector3(90, 3, -17);
+        }
+            
 
 
 
         if (IsEnding())
         {
+            TimerRunning = false;
             GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
             int EnemyCount = Enemies.Length;
             for (int i = 0; i < EnemyCount; i++)
@@ -48,12 +57,20 @@ public class Timer : MonoBehaviour
                 if (Enemies[i].GetComponent<Renderer>().enabled == true)
                 {
                     Timed = Timed + 5;
+                    ExtraTime = ExtraTime + 5;
                 }
             }
             if (BestTime == 0 || BestTime > Timed)
                 BestTime = Timed;
                 PlayerPrefs.SetFloat("FastestTime", BestTime);
                 LeaderboardText.text = ("Best Time:    " + Mathf.Round(BestTime * 1000) / 1000);
+            CompletedText.text = "Completed \n +" + ExtraTime + "seconds for " + ExtraTime / 5 + " missed enemies";
+            ExtraTime = 0;
+            CompletedDisplayTime -= Time.deltaTime;
+            if (CompletedDisplayTime < 0)
+                CompletedText.text = "";
+
+
         }
 
 
@@ -71,6 +88,7 @@ public class Timer : MonoBehaviour
         }
         TimerRunning = true;
         Timed = 0;
+        CompletedDisplayTime = MaxDisplayTime;
     }
 
     bool IsStarting()

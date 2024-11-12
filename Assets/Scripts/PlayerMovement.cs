@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        //Moving Camera
+        ////////////////////////////////Moving Camera///////////////////////////////////////////
         if (!IsWallRunning)
         {
             
@@ -117,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-        //Jump
+        ////////////////////////////////////////////Jump////////////////////////////////////////
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             //rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
@@ -125,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
             ExitingSlope = true;
         }
 
-        //Slide
+        //////////////////////////////////////////////Slide///////////////////////////////////////////////
 
         if (Input.GetButtonDown("Slide") && (Vertical != 0 || Horizontal != 0))
         {
@@ -141,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        //Respawn
+        ///////////////////////////////////////////////Respawn////////////////////////////////////
         if (transform.position.y < -20) 
         {
             transform.position = new Vector3(90, 3, -17);
