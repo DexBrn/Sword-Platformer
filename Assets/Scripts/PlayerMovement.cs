@@ -102,9 +102,10 @@ public class PlayerMovement : MonoBehaviour
         //Moving Camera
         if (!IsWallRunning)
         {
-            transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
+            
+            //transform.localRotation = Quaternion.Euler(20, MouseRotate.x, transform.rotation.z);
         }
-        
+        transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
         Camera.localRotation = Quaternion.Euler(-MouseRotate.y, 0, 0);
 
         
@@ -169,23 +170,14 @@ public class PlayerMovement : MonoBehaviour
             transform.position += transform.up * WallClimbSpeed / 1000;
         }
 
+        
+        
+
         if (OnSlope())
         {
-            //print("On Slop");
-            rb.AddForce(GetSlopeMoveDirection() * MoveSpeed * 20, ForceMode.Force);
-
-            if (rb.velocity.y < 0 && ExitingSlope == true)
-            {
-
-                print("Push Down");
-                rb.AddForce(Vector3.down / SlopePushdownForce, ForceMode.Impulse);
-                if (rb.velocity.magnitude > MoveSpeed)
-                    rb.velocity = rb.velocity.normalized * MoveSpeed / 2 ;
-                
-
-            }
-
+            transform.rotation = Quaternion.Euler(20, MouseRotate.x, transform.rotation.z);
         }
+
 
     }
 
@@ -207,6 +199,7 @@ public class PlayerMovement : MonoBehaviour
         IsSliding = false;
         transform.localScale = new Vector3(transform.localScale.x, StartYScale, transform.localScale.z);
         Frictionless.staticFriction = BaseFriction;
+        JumpPower = 75;
     }
 
     private void SlidingMovement()
@@ -215,7 +208,10 @@ public class PlayerMovement : MonoBehaviour
 
         //rb.AddForce(InputDirection.normalized * SlideForce, ForceMode.Force);
         rb.AddForce(transform.forward * SlideForce, ForceMode.Force);
-        SlideTimer -= Time.deltaTime;
+        if (!OnSlope())
+            SlideTimer -= Time.deltaTime;
+        if (OnSlope())
+            JumpPower = 200;
 
         if (SlideTimer <= 0)
         {

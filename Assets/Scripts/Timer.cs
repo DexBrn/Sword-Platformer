@@ -17,7 +17,9 @@ public class Timer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (PlayerPrefs.GetFloat("FastestTime") != 0) ;
+            LeaderboardText.text = ("Best Time:    " + Mathf.Round(PlayerPrefs.GetFloat("FastestTime") * 1000) / 1000);
+            BestTime = PlayerPrefs.GetFloat("FastestTime");
     }
 
     // Update is called once per frame
@@ -39,8 +41,18 @@ public class Timer : MonoBehaviour
 
         if (IsEnding())
         {
+            GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            int EnemyCount = Enemies.Length;
+            for (int i = 0; i < EnemyCount; i++)
+            {
+                if (Enemies[i].GetComponent<Renderer>().enabled == true)
+                {
+                    Timed = Timed + 5;
+                }
+            }
             if (BestTime == 0 || BestTime > Timed)
                 BestTime = Timed;
+                PlayerPrefs.SetFloat("FastestTime", BestTime);
                 LeaderboardText.text = ("Best Time:    " + Mathf.Round(BestTime * 1000) / 1000);
         }
 
@@ -54,7 +66,6 @@ public class Timer : MonoBehaviour
         int EnemyCount = Enemies.Length;
         for (int i = 0; i < EnemyCount; i++)
         {
-            
             Enemies[i].GetComponent<Renderer>().enabled = true;
             Enemies[i].GetComponent<Collider>().enabled = true;
         }
