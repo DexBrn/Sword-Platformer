@@ -15,7 +15,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform GroundCheck;
     public LayerMask GroundLayer;
     public Transform Camera;
-    
+    public Camera CameraB;
+
     public Vector2 MouseRotate;
     public Vector3 CameraStartPos;
 
@@ -89,9 +90,9 @@ public class PlayerMovement : MonoBehaviour
         MouseRotate.x += Input.GetAxis("Mouse X");
         MouseRotate.y += Input.GetAxis("Mouse Y");
 
-        if (MouseRotate.y > 27)
+        if (MouseRotate.y > 47)
         {
-            MouseRotate.y = 27;
+            MouseRotate.y = 47;
         }
         if (MouseRotate.y < -20)
         {
@@ -149,26 +150,21 @@ public class PlayerMovement : MonoBehaviour
         
         }
 
+        if (CameraB.fieldOfView > 105 && rb.velocity.magnitude == 0)
+            CameraB.fieldOfView = 60;
+        if (CameraB.fieldOfView <= 105)
+            CameraB.fieldOfView = 60 + rb.velocity.magnitude / 2.2f;
+        
 
-       
+
 
 
         CheckForWall();
         wallRunState();
 
-        if (IsWallRunning)
-        {
-            float WallX = transform.position.x;
-            transform.position += transform.forward * WallRunForce / 100;
-            //transform.position = new Vector3(WallX, transform.position.y, transform.position.z);
-            
-        }
+        
 
-        if (Input.GetKey(KeyCode.Space) && WallForward)
-        {
-            
-            transform.position += transform.up * WallClimbSpeed / 1000;
-        }
+        
 
         
         
@@ -223,6 +219,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    
+
+
+
 
     bool IsGrounded()
     {
@@ -257,6 +257,19 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+        if (IsWallRunning)
+        {
+            float WallX = transform.position.x;
+            transform.position += transform.forward * WallRunForce / 100;
+            //transform.position = new Vector3(WallX, transform.position.y, transform.position.z);
+
+        }
+
+        if (Input.GetKey(KeyCode.Space) && WallForward)
+        {
+
+            transform.position += transform.up * WallClimbSpeed / 1000;
+        }
 
         if (IsSliding)
         {
@@ -268,8 +281,12 @@ public class PlayerMovement : MonoBehaviour
             WallRunMovement();
         }
 
-        
-        
+        if (Input.GetKey(KeyCode.Z))
+        {
+            print("Check");
+            transform.position -= transform.up * 1;
+        }
+
 
 
     }

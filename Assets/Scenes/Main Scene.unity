@@ -3194,6 +3194,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Camera: {fileID: 963194228}
+  CameraB: {fileID: 963194227}
   MouseRotate: {x: 0, y: 0}
   CameraStartPos: {x: 0, y: 0, z: 0}
   SlideYScale: 0.5
@@ -3205,14 +3206,14 @@ MonoBehaviour:
   WallRunWall:
     serializedVersion: 2
     m_Bits: 128
-  WallRunForce: 6.5
+  WallRunForce: 85
   MaxWallRun: 1.5
   WallCheckDistance: 1
   MinJumpHeight: 1
   WallJumpUpForce: 50
   WallJumpSideForce: 50
   IsWallRunning: 0
-  WallClimbSpeed: 40
+  WallClimbSpeed: 400
   MaxSlopeAngle: 60
   SlopePushdownForce: 1000
   ExitingSlope: 0
