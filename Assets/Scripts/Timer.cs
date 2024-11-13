@@ -21,9 +21,12 @@ public class Timer : MonoBehaviour
     void Start()
     {
         MaxDisplayTime = CompletedDisplayTime;
-        if (PlayerPrefs.GetFloat("FastestTime") != 0) ;
+        if (PlayerPrefs.GetFloat("FastestTime") != 0)
+        {
             LeaderboardText.text = ("Best Time:    " + Mathf.Round(PlayerPrefs.GetFloat("FastestTime") * 1000) / 1000);
             BestTime = PlayerPrefs.GetFloat("FastestTime");
+        }
+            
     }
 
     // Update is called once per frame
@@ -42,6 +45,7 @@ public class Timer : MonoBehaviour
         {
             TimerRunning = false;
             transform.position = new Vector3(90, 3, -17);
+            CompletedText.text = "";
         }
             
 
@@ -89,6 +93,7 @@ public class Timer : MonoBehaviour
         TimerRunning = true;
         Timed = 0;
         CompletedDisplayTime = MaxDisplayTime;
+        CompletedText.text = "";
     }
 
     bool IsStarting()
