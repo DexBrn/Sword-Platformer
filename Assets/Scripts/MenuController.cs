@@ -21,10 +21,12 @@ public class MenuController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape) && MenuPanelMain.enabled == false)
         {
+            MenuPanel.gameObject.SetActive(true);
             MenuPanelMain.enabled = true;
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && MenuPanelMain.enabled == true)
         {
+            MenuPanel.gameObject.SetActive(false);
             MenuPanelMain.enabled = false;
         }
 
