@@ -10,7 +10,8 @@ public class MenuController : MonoBehaviour
     public Transform MenuPanel;
     Image MenuPanelMain;
     public Transform AbilityPanel;
-    string AbilityToSwitch; 
+    string AbilityToSwitch;
+    Transform MenuAbilityNum;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,12 @@ public class MenuController : MonoBehaviour
             MenuPanel.gameObject.SetActive(false);
             MenuPanelMain.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
+            if (AbilityPanel.gameObject.active == true)
+            {
+                AbilityPanel.gameObject.SetActive(false);
+                
+
+            }
         }
 
 
@@ -42,19 +49,21 @@ public class MenuController : MonoBehaviour
 
     }
 
-    public void AbilityPanelState()
+    public void AbilityPanelState(Transform ThisButton)
     {
         if (AbilityPanel.gameObject.active == false) 
         { 
             AbilityPanel.gameObject.SetActive(true);
-
+            MenuAbilityNum = ThisButton;
         
         }
         else
         {
             AbilityPanel.gameObject.SetActive(false);
-            AbilityToSwitch = AbilityPanel.GetChild(0).GetComponent<TextMeshPro>().text;
-            MenuPanel.GetChild(2).GetComponent<TextMeshPro>().text = AbilityToSwitch;
+            AbilityToSwitch = ThisButton.GetChild(0).GetComponent<TMP_Text>().text;
+            MenuAbilityNum.GetChild(0).GetComponent<TMP_Text>().text = AbilityToSwitch;
+            
+            
         }
     }
 

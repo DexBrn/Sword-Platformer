@@ -8,6 +8,11 @@ public class SwordScript : MonoBehaviour
 {
     Rigidbody rb;
 
+    public string[] Abilities;
+    public Transform SelectedAbility1;
+    public Transform SelectedAbility2;
+
+
     [Header("Basic Attack")]
     public Transform BasicHitbox;
     public float AttackDuration;
@@ -28,6 +33,9 @@ public class SwordScript : MonoBehaviour
     public float DashCharge = 1;
     public Outline BladeOutline;
     public Outline HandleOutline;
+
+    [Header("Ground Slam")]
+    public float GroundSlamForce;
 
     // Start is called before the first frame update
     void Start()
@@ -149,11 +157,53 @@ public class SwordScript : MonoBehaviour
         }
 
 
-        
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            StartAbility1();
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            StartAbility2();
+        }
+
+
+
 
     }
 
-    
+    private void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            rb.AddForce(-transform.up * GroundSlamForce, ForceMode.Impulse);
+        }
+    }
+
+
+
+    void StartAbility1()
+    {
+       
+        for (int i = 0; i < 8; i++) 
+        {
+            if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == Abilities[i])
+            {
+                print(Abilities[i]);
+            }
+        }
+    }
+    void StartAbility2() 
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == Abilities[i])
+            {
+                print(Abilities[i]);
+            }
+        }
+    }
+
+
 
 
 }

@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     public float MoveSpeed = 5f;
     public float ExtraJumpSpeed = 5f;
     public float JumpPower = 10f;
-    public float GroundSlamForce;
     public Transform GroundCheck;
     public LayerMask GroundLayer;
     public Transform Camera;
@@ -282,11 +281,7 @@ public class PlayerMovement : MonoBehaviour
             WallRunMovement();
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt))
-        {
-            print("Check");
-            rb.AddForce(-transform.up * GroundSlamForce, ForceMode.Impulse);
-        }
+        
 
 
 
