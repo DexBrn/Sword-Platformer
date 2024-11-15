@@ -90,13 +90,15 @@ public class PlayerMovement : MonoBehaviour
         MouseRotate.x += Input.GetAxis("Mouse X");
         MouseRotate.y += Input.GetAxis("Mouse Y");
 
-        if (MouseRotate.y > 47)
+        if (MouseRotate.y > 67)
         {
-            MouseRotate.y = 47;
+            //was 47, 27
+            MouseRotate.y = 67;
         }
-        if (MouseRotate.y < -20)
+        if (MouseRotate.y < -60)
         {
-            MouseRotate.y = -20;
+            //was -20
+            MouseRotate.y = -60;
         }
 
 
