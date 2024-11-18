@@ -12,9 +12,9 @@ public class SwordScript : MonoBehaviour
     public string[] Abilities;
     public Transform SelectedAbility1;
     public Transform SelectedAbility2;
-    KeyCode SwordDashBind;
-    KeyCode GroundSlamBind;
-    KeyCode OmniDashBind;
+    
+    
+    
 
     [Header("Basic Attack")]
     public Transform BasicHitbox;
@@ -32,23 +32,38 @@ public class SwordScript : MonoBehaviour
     bool CanDash = true;
     public float DashCoolDown;
     private float MaxDashCoolDown;
-    public TMP_Text DashCoolDownText;
+    public TMP_Text Ability1Text;
     public float DashCharge = 1;
     public Outline BladeOutline;
     public Outline HandleOutline;
+    KeyCode SwordDashBind;
 
     [Header("Omni Dash")]
     public float OmniDashPower;
     bool CanOmniDash = true;
     public float OmniDashCoolDown;
     private float MaxOmniDashCoolDown;
-    public TMP_Text OmniDashCoolDownText;
+    public TMP_Text Ability2Text;
     public float OmniDashCharge = 1;
-    //public Outline BladeOutline;
-    //public Outline HandleOutline;
+    KeyCode OmniDashBind;
+
+    [Header("Multi Dash")]
+    public float MultiDashPower;
+    bool CanMultiDash = true;
+    public float MultiDashCoolDown;
+    private float MaxMultiDashCoolDown;
+    public float MultiDashCharge = 1;
+    public float MultiAirTime;
+    float MaxMultiAirTime;
+    bool MultiFloat = false;
+    bool ExtraMultiFloat = false;
+    float MiniMultiDashCoolDown = 1;
+    KeyCode MultiDashBind;
+
 
     [Header("Ground Slam")]
     public float GroundSlamForce;
+    KeyCode GroundSlamBind;
 
     // Start is called before the first frame update
     void Start()
@@ -58,6 +73,8 @@ public class SwordScript : MonoBehaviour
         MaxAttackCooldown = AttackCooldown;
         MaxAttackDuration = AttackDuration;
         MaxOmniDashCoolDown = OmniDashCoolDown;
+        MaxMultiDashCoolDown = MultiDashCoolDown;
+        MaxMultiAirTime = MultiAirTime;
     }
 
     // Update is called once per frame
@@ -120,12 +137,12 @@ public class SwordScript : MonoBehaviour
         if (CanDash == false)
         {
             DashCoolDown -= Time.deltaTime;
-            DashCoolDownText.text = ("Sword Dash: " + Mathf.Round(DashCoolDown * 1000) / 1000);
+            Ability1Text.text = ("Sword Dash: " + Mathf.Round(DashCoolDown * 1000) / 1000);
             if (DashCoolDown < 0)
             {
                 CanDash = true;
                 DashCoolDown = 0;
-                DashCoolDownText.text = ("Sword Dash: Ready");
+                Ability1Text.text = ("Sword Dash: Ready");
             }
         }
 
@@ -205,12 +222,12 @@ public class SwordScript : MonoBehaviour
         if (CanOmniDash == false)
         {
             OmniDashCoolDown -= Time.deltaTime;
-            OmniDashCoolDownText.text = ("Omni Dash: " + Mathf.Round(OmniDashCoolDown * 1000) / 1000);
+            Ability2Text.text = ("Omni Dash: " + Mathf.Round(OmniDashCoolDown * 1000) / 1000);
             if (OmniDashCoolDown < 0)
             {
                 CanOmniDash = true;
                 OmniDashCoolDown = 0;
-                OmniDashCoolDownText.text = ("Omni Dash: Ready");
+                Ability2Text.text = ("Omni Dash: Ready");
             }
         }
 
@@ -232,8 +249,7 @@ public class SwordScript : MonoBehaviour
             {
                 BladeOutline.OutlineColor = ChargeOneColour;
                 HandleOutline.OutlineColor = ChargeOneColour;
-                //BladeOutline.OutlineColor = new Color(DashCharge * 50, 05, 0);
-                //HandleOutline.OutlineColor = new Color(DashCharge * 50, 05, 0);
+               
             }
 
             if (OmniDashCharge > 2)
@@ -269,6 +285,132 @@ public class SwordScript : MonoBehaviour
         }
 
 
+
+
+        /////////////////////////////////////// Multi Dash Logic //////////////////////////
+
+        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
+        {
+            MultiDashBind = KeyCode.Q;
+        }
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
+        {
+            MultiDashBind = KeyCode.E;
+        }
+        else
+        {
+            MultiDashBind = KeyCode.None;
+        }
+
+        
+
+        if (MultiFloat == true)
+        {
+            print("Multifloating");
+            rb.useGravity = false;
+            //rb.velocity = Vector3.zero;
+            MiniMultiDashCoolDown -= Time.deltaTime;
+            if (MiniMultiDashCoolDown > 0)
+                ExtraMultiFloat = true;
+            MultiAirTime -= Time.deltaTime;
+            
+            if (MultiAirTime < 0)
+            {
+                MultiFloat = false;
+                ExtraMultiFloat = false;
+                rb.useGravity = true;
+                CanMultiDash = false;
+            }
+        }
+
+        if (CanMultiDash == false)
+        {
+            MultiDashCoolDown -= Time.deltaTime;
+            Ability2Text.text = ("Multi Dash: " + Mathf.Round(MultiDashCoolDown * 1000) / 1000);
+            if (MultiDashCoolDown < 0)
+            {
+                MultiFloat = false;
+                CanMultiDash = true;
+                MultiDashCoolDown = 0;
+                Ability2Text.text = ("Multi Dash: Ready");
+            }
+        }
+
+        if (Input.GetKey(MultiDashBind))
+        {
+            Color ChargeOneColour;
+            Color ChargeTwoColour;
+            Color MaxChargeColour;
+            ColorUtility.TryParseHtmlString("#FFFA00", out ChargeOneColour);
+            ColorUtility.TryParseHtmlString("#FFD500", out ChargeTwoColour);
+            ColorUtility.TryParseHtmlString("#FF9600", out MaxChargeColour);
+            MultiDashCharge += Time.deltaTime;
+
+
+            BladeOutline.OutlineWidth += Time.deltaTime * 3;
+            HandleOutline.OutlineWidth += Time.deltaTime * 3;
+
+            if (MultiDashCharge > 1)
+            {
+                BladeOutline.OutlineColor = ChargeOneColour;
+                HandleOutline.OutlineColor = ChargeOneColour;
+
+            }
+
+            if (MultiDashCharge > 2)
+            {
+                BladeOutline.OutlineColor = ChargeTwoColour;
+                HandleOutline.OutlineColor = ChargeTwoColour;
+
+            }
+
+            if (MultiDashCharge > 3)
+            {
+
+                BladeOutline.OutlineColor = MaxChargeColour;
+                HandleOutline.OutlineColor = MaxChargeColour;
+                MultiDashCharge = 3;
+                BladeOutline.OutlineWidth = 12;
+                HandleOutline.OutlineWidth = 12;
+            }
+        }
+
+        if (Input.GetKeyUp(MultiDashBind) && CanMultiDash && !MultiFloat)
+        {
+            rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
+            
+            
+            BasicHitbox.GetComponent<Collider>().enabled = true;
+            IsSwinging = true;
+            MultiAirTime = MaxMultiAirTime;
+            MultiDashCharge = 1;
+            BladeOutline.OutlineColor = new Color(0, 255, 250);
+            HandleOutline.OutlineColor = new Color(0, 255, 250);
+            BladeOutline.OutlineWidth = 4;
+            HandleOutline.OutlineWidth = 4;
+            MultiFloat = true;
+            MultiAirTime = MaxMultiAirTime;
+
+        }
+
+        if (Input.GetKeyDown(MultiDashBind) && CanMultiDash && MultiFloat)
+        {
+
+            
+            rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
+            CanMultiDash = false;
+            BasicHitbox.GetComponent<Collider>().enabled = true;
+            IsSwinging = true;
+            MultiDashCoolDown = MaxMultiDashCoolDown;
+            MultiDashCharge = 1;
+            BladeOutline.OutlineColor = new Color(0, 255, 250);
+            HandleOutline.OutlineColor = new Color(0, 255, 250);
+            BladeOutline.OutlineWidth = 4;
+            HandleOutline.OutlineWidth = 4;
+            rb.useGravity = true;
+            MultiFloat = false;
+
+        }
 
 
 

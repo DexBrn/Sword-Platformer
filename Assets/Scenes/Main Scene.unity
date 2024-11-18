@@ -4574,14 +4574,18 @@ MonoBehaviour:
   DashFowardPower: 300
   DashUpPower: 50
   DashCoolDown: 6
-  DashCoolDownText: {fileID: 1745911517}
+  Ability1Text: {fileID: 1745911517}
   DashCharge: 1
   BladeOutline: {fileID: 343963303}
   HandleOutline: {fileID: 1242887900}
   OmniDashPower: 300
   OmniDashCoolDown: 4.5
-  OmniDashCoolDownText: {fileID: 1172780224}
+  Ability2Text: {fileID: 1172780224}
   OmniDashCharge: 1
+  MultiDashPower: 200
+  MultiDashCoolDown: 7
+  MultiDashCharge: 1
+  MultiAirTime: 1.5
   GroundSlamForce: 75
 --- !u!114 &624625997
 MonoBehaviour:
@@ -8106,7 +8110,7 @@ GameObject:
   - component: {fileID: 1172780225}
   - component: {fileID: 1172780224}
   m_Layer: 5
-  m_Name: Omni Dash Cooldown
+  m_Name: Ability 2 Cooldown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8151,7 +8155,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Omni Dash: Ready'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10190,7 +10194,7 @@ GameObject:
   - component: {fileID: 1745911518}
   - component: {fileID: 1745911517}
   m_Layer: 5
-  m_Name: Sword Dash Cooldown
+  m_Name: Ability 1 Cooldown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
