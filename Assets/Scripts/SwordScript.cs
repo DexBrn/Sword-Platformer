@@ -60,10 +60,26 @@ public class SwordScript : MonoBehaviour
     float MiniMultiDashCoolDown = 1;
     KeyCode MultiDashBind;
 
-
     [Header("Ground Slam")]
     public float GroundSlamForce;
     KeyCode GroundSlamBind;
+
+    [Header("Double Jump")]
+    KeyCode DoubleJumpBind;
+    KeyCode AltDoubleJumpBind;
+    public bool CanDoubleJump = false;
+    PlayerMovement PlayerMovement;
+
+    [Header("Enemy Leap")]
+    KeyCode EnemyLeapBind;
+    public float InitialDashTime;
+    public float LeapForce;
+    Vector3 LeapStartPos;
+    public float LeapRange;
+    public LayerMask EnemyLayer;
+    float ElapsedTime;
+    bool IsLeaping;
+
 
     // Start is called before the first frame update
     void Start()
@@ -75,6 +91,7 @@ public class SwordScript : MonoBehaviour
         MaxOmniDashCoolDown = OmniDashCoolDown;
         MaxMultiDashCoolDown = MultiDashCoolDown;
         MaxMultiAirTime = MultiAirTime;
+        PlayerMovement = transform.GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
@@ -306,7 +323,7 @@ public class SwordScript : MonoBehaviour
 
         if (MultiFloat == true)
         {
-            print("Multifloating");
+            
             rb.useGravity = false;
             //rb.velocity = Vector3.zero;
             MiniMultiDashCoolDown -= Time.deltaTime;
@@ -414,6 +431,89 @@ public class SwordScript : MonoBehaviour
 
 
 
+        /////////////////////////////////////// Double Jump Logic //////////////////////////
+
+        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Double Jump")
+        {
+            DoubleJumpBind = KeyCode.Q;
+            AltDoubleJumpBind = KeyCode.Space;
+        }
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Double Jump")
+        {
+            DoubleJumpBind = KeyCode.E;
+            AltDoubleJumpBind = KeyCode.Space;
+           
+        }
+        else
+        {
+            DoubleJumpBind = KeyCode.None;
+            AltDoubleJumpBind = KeyCode.None;
+        }
+
+
+        if (!PlayerMovement.IsGrounded() && CanDoubleJump && (Input.GetKeyDown(AltDoubleJumpBind)))
+        {
+            float JumpPower = PlayerMovement.JumpPower;
+            rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
+            CanDoubleJump = false;
+        }
+
+        if (!PlayerMovement.IsGrounded() && CanDoubleJump && Input.GetKeyDown(DoubleJumpBind))
+        {
+            float JumpPower = PlayerMovement.JumpPower;
+            rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
+            CanDoubleJump = false;
+        }
+
+        /////////////////////////////////////// Enemy Leap Logic //////////////////////////
+
+        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Enemy Leap")
+        {
+            EnemyLeapBind = KeyCode.Q;
+        }
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Enemy Leap")
+        {
+            EnemyLeapBind = KeyCode.E;
+        }
+        else
+        {
+            EnemyLeapBind = KeyCode.None;
+        }
+
+        
+
+
+        if (Input.GetKeyDown(EnemyLeapBind) && EnemyInRange())
+        {
+            print("Heyy");
+            GetCurrentPosition();
+            IsLeaping = true;
+            
+
+
+        }
+        if (IsLeaping)
+        {
+            ElapsedTime += Time.deltaTime;
+            float PercentComplete = ElapsedTime / InitialDashTime;
+            print(PercentComplete);
+            transform.position = Vector3.Lerp(LeapStartPos, new Vector3(100, 100, 100), PercentComplete);
+            
+        }
+        if (ElapsedTime > InitialDashTime)
+        {
+            IsLeaping = false;
+            ElapsedTime = 0;
+        }
+            
+
+
+
+
+
+
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /*
@@ -456,6 +556,16 @@ public class SwordScript : MonoBehaviour
         }
     }
 
+
+    private void GetCurrentPosition()
+    {
+        LeapStartPos = transform.position; 
+    }
+
+    public bool EnemyInRange()
+    {
+        return Physics.CheckSphere(transform.position, LeapRange, EnemyLayer);
+    }
 
     /*
     void StartAbility1()

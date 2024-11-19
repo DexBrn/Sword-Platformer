@@ -629,7 +629,7 @@ GameObject:
   - component: {fileID: 71369484}
   - component: {fileID: 71369483}
   - component: {fileID: 71369482}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (3)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1604,7 +1604,7 @@ GameObject:
   - component: {fileID: 262688638}
   - component: {fileID: 262688637}
   - component: {fileID: 262688636}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (1)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -2831,7 +2831,7 @@ GameObject:
   - component: {fileID: 408139378}
   - component: {fileID: 408139377}
   - component: {fileID: 408139376}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (13)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -3761,6 +3761,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Katana
       objectReference: {fileID: 0}
+    - target: {fileID: 3566390031902043909, guid: 745e41815159d6f40ab6860f91e4a2ca, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6643aaacb9f512649b6a0da4cb287ec5, type: 2}
     - target: {fileID: 3779745573541866595, guid: 745e41815159d6f40ab6860f91e4a2ca, type: 3}
       propertyPath: m_Name
       value: Handle
@@ -4019,7 +4023,7 @@ GameObject:
   - component: {fileID: 571974700}
   - component: {fileID: 571974699}
   - component: {fileID: 571974698}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (11)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -4142,7 +4146,7 @@ GameObject:
   - component: {fileID: 579673508}
   - component: {fileID: 579673507}
   - component: {fileID: 579673506}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -4587,6 +4591,13 @@ MonoBehaviour:
   MultiDashCharge: 1
   MultiAirTime: 1.5
   GroundSlamForce: 75
+  CanDoubleJump: 0
+  InitialDashTime: 1
+  LeapForce: 300
+  LeapRange: 10
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!114 &624625997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5856,7 +5867,7 @@ GameObject:
   - component: {fileID: 852673096}
   - component: {fileID: 852673095}
   - component: {fileID: 852673094}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (10)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -6189,7 +6200,7 @@ GameObject:
   - component: {fileID: 934802106}
   - component: {fileID: 934802105}
   - component: {fileID: 934802104}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (9)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -6952,7 +6963,7 @@ GameObject:
   - component: {fileID: 1094794131}
   - component: {fileID: 1094794130}
   - component: {fileID: 1094794129}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (7)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -7357,9 +7368,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Double Jump
-
-'
+  m_text: Double Jump
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8905,7 +8914,7 @@ GameObject:
   - component: {fileID: 1387652785}
   - component: {fileID: 1387652784}
   - component: {fileID: 1387652783}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (2)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -9299,7 +9308,7 @@ GameObject:
   - component: {fileID: 1592320674}
   - component: {fileID: 1592320673}
   - component: {fileID: 1592320672}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (8)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -9422,7 +9431,7 @@ GameObject:
   - component: {fileID: 1593651649}
   - component: {fileID: 1593651648}
   - component: {fileID: 1593651647}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (4)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -9844,7 +9853,7 @@ GameObject:
   - component: {fileID: 1705312517}
   - component: {fileID: 1705312516}
   - component: {fileID: 1705312515}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (6)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -10072,7 +10081,7 @@ GameObject:
   - component: {fileID: 1739706626}
   - component: {fileID: 1739706625}
   - component: {fileID: 1739706624}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (12)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -10782,7 +10791,7 @@ GameObject:
   - component: {fileID: 1829731653}
   - component: {fileID: 1829731652}
   - component: {fileID: 1829731651}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (5)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -11224,7 +11233,7 @@ GameObject:
   - component: {fileID: 2068520191}
   - component: {fileID: 2068520195}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11504,7 +11513,7 @@ GameObject:
   - component: {fileID: 2142109469}
   - component: {fileID: 2142109468}
   - component: {fileID: 2142109467}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy (14)
   m_TagString: Enemy
   m_Icon: {fileID: 0}

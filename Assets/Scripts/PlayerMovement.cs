@@ -111,12 +111,6 @@ public class PlayerMovement : MonoBehaviour
         transform.localRotation = Quaternion.Euler(transform.rotation.x, MouseRotate.x, transform.rotation.z);
         Camera.localRotation = Quaternion.Euler(-MouseRotate.y, 0, 0);
 
-        
-        
-
-        
-        
-
 
 
 
@@ -126,7 +120,16 @@ public class PlayerMovement : MonoBehaviour
             //rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
             rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
             ExitingSlope = true;
+            SwordScript SwordScript = transform.GetComponent<SwordScript>();
+            SwordScript.CanDoubleJump = true;
         }
+
+        if (IsGrounded())
+        {
+            SwordScript SwordScript = transform.GetComponent<SwordScript>();
+            SwordScript.CanDoubleJump = true;
+        }
+            
 
         //////////////////////////////////////////////Slide///////////////////////////////////////////////
 
@@ -174,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
         if (OnSlope())
         {
             transform.rotation = Quaternion.Euler(20, MouseRotate.x, transform.rotation.z);
-        }
+        } 
 
 
     }
@@ -226,10 +229,13 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    bool IsGrounded()
+    public bool IsGrounded()
     {
         ExitingSlope = false;
+        SwordScript SwordScript = transform.GetComponent<SwordScript>();
+        
         return Physics.CheckSphere(GroundCheck.position, 0.5f, GroundLayer);
+        
     }
     
 
