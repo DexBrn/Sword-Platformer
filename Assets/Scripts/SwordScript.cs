@@ -79,6 +79,7 @@ public class SwordScript : MonoBehaviour
     public LayerMask EnemyLayer;
     float ElapsedTime;
     bool IsLeaping;
+    Vector3 EnemyPos;
 
 
     // Start is called before the first frame update
@@ -485,19 +486,33 @@ public class SwordScript : MonoBehaviour
 
         if (Input.GetKeyDown(EnemyLeapBind) && EnemyInRange())
         {
-            print("Heyy");
             GetCurrentPosition();
             IsLeaping = true;
             
 
 
         }
+
+        Collider[] LeapCollider = Physics.OverlapSphere(transform.position, LeapRange);
+        for (int i = 0, n = LeapCollider.Length; i < n; i++)
+        {
+
+            if (LeapCollider[i].gameObject.layer == EnemyLayer)
+                print(LeapCollider[i].transform.position);
+            EnemyPos = LeapCollider[i].transform.position;
+            print(EnemyPos);
+
+        }
+
         if (IsLeaping)
         {
             ElapsedTime += Time.deltaTime;
             float PercentComplete = ElapsedTime / InitialDashTime;
-            print(PercentComplete);
-            transform.position = Vector3.Lerp(LeapStartPos, new Vector3(100, 100, 100), PercentComplete);
+            
+            
+            //print(EnemyPos);
+            //print(LeapStartPos);
+            transform.position = Vector3.Lerp(LeapStartPos, EnemyPos, PercentComplete);
             
         }
         if (ElapsedTime > InitialDashTime)
