@@ -4615,6 +4615,7 @@ MonoBehaviour:
     m_Bits: 2048
   MaxGrappleDistance: 100
   SwordTip: {fileID: 1649743268}
+  KatanaHolder: {fileID: 2019044451}
 --- !u!114 &624625997
 MonoBehaviour:
   m_ObjectHideFlags: 0

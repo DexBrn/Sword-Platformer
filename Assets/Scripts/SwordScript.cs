@@ -93,6 +93,8 @@ public class SwordScript : MonoBehaviour
     KeyCode GrappleBind;
     public float MaxGrappleDistance;
     public Transform SwordTip;
+    public Transform KatanaHolder;
+
 
     // Start is called before the first frame update
     void Start()
@@ -602,7 +604,7 @@ public class SwordScript : MonoBehaviour
             StopGrapple();
         
 
-
+        
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -663,7 +665,7 @@ public class SwordScript : MonoBehaviour
             joint.maxDistance = DistanceFromPoint * 0.8f;
             joint.minDistance = DistanceFromPoint * 0.25f;
 
-            joint.spring = 20.5f;
+            joint.spring = 30.5f;
             joint.damper = 3;
             joint.massScale = 9.5f;
 
@@ -676,13 +678,24 @@ public class SwordScript : MonoBehaviour
     {
         
         DrawGrapple();
+        
     }
 
     void DrawGrapple()
     {
-        if (!transform.gameObject.GetComponent<SpringJoint>()) return;
+        if (!transform.gameObject.GetComponent<SpringJoint>())
+        {
+            //KatanaHolder.localRotation =  Quaternion.Euler(0, -90, 0);
+            KatanaHolder.localRotation = Quaternion.Lerp(KatanaHolder.localRotation, Quaternion.Euler(0, -90, 0), Time.deltaTime * 5);
+            return;
+
+        }
+            
+            
         LineRenderer.SetPosition(0, SwordTip.position);
         LineRenderer.SetPosition(1, GrapplePoint);
+        KatanaHolder.LookAt(GrapplePoint);
+        
     }
 
     private void StopGrapple()
@@ -690,6 +703,8 @@ public class SwordScript : MonoBehaviour
         LineRenderer.positionCount = 0;
         Destroy(transform.gameObject.GetComponent<SpringJoint>());
     }
+
+    
 
 
 }
