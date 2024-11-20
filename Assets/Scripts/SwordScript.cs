@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
-//using Unity.VisualScripting;
+
 
 public class SwordScript : MonoBehaviour
 {
@@ -87,10 +86,11 @@ public class SwordScript : MonoBehaviour
     GameObject[] EnemyList;
     public LayerMask EnemyLayer;
 
+
     [Header("Grapple")]
+    private Vector3 GrapplePoint;
     LineRenderer LineRenderer;
     KeyCode GrappleBind;
-    private Vector3 GrapplePoint;
     public float MaxGrappleDistance;
     public Transform SwordTip;
 
@@ -582,7 +582,7 @@ public class SwordScript : MonoBehaviour
         {
             GrappleBind = KeyCode.Q;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Grapple ")
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Grapple")
         {
             GrappleBind = KeyCode.E;
         }
@@ -591,9 +591,16 @@ public class SwordScript : MonoBehaviour
             GrappleBind = KeyCode.None;
         }
 
+        
 
-
-
+        if (Input.GetKeyDown(GrappleBind))
+        {
+            StartGrapple();
+            
+        }
+        if (Input.GetKeyUp(GrappleBind))
+            StopGrapple();
+        
 
 
 
@@ -642,20 +649,46 @@ public class SwordScript : MonoBehaviour
 
     private void StartGrapple()
     {
+        
         RaycastHit hit;
         if (Physics.Raycast(Camera.position, Camera.forward, out hit, MaxGrappleDistance))
         {
             GrapplePoint = hit.point;
-            Joint joint = transform.AddComponent<SpringJoint>();
+            SpringJoint joint = transform.gameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = GrapplePoint;
 
+            float DistanceFromPoint = Vector3.Distance(transform.position, GrapplePoint);
+
+            joint.maxDistance = DistanceFromPoint * 0.8f;
+            joint.minDistance = DistanceFromPoint * 0.25f;
+
+            joint.spring = 20.5f;
+            joint.damper = 3;
+            joint.massScale = 9.5f;
+
+            LineRenderer.positionCount = 2;
+
         }
     }
-    
+
+    private void LateUpdate()
+    {
+        
+        DrawGrapple();
+    }
+
+    void DrawGrapple()
+    {
+        if (!transform.gameObject.GetComponent<SpringJoint>()) return;
+        LineRenderer.SetPosition(0, SwordTip.position);
+        LineRenderer.SetPosition(1, GrapplePoint);
+    }
+
     private void StopGrapple()
     {
-
+        LineRenderer.positionCount = 0;
+        Destroy(transform.gameObject.GetComponent<SpringJoint>());
     }
 
 
