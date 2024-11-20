@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 //using Unity.VisualScripting;
 
 public class SwordScript : MonoBehaviour
@@ -12,9 +13,9 @@ public class SwordScript : MonoBehaviour
     public string[] Abilities;
     public Transform SelectedAbility1;
     public Transform SelectedAbility2;
-    
-    
-    
+    public TMP_Text Ability1Text;
+    public TMP_Text Ability2Text;
+
 
     [Header("Basic Attack")]
     public Transform BasicHitbox;
@@ -32,20 +33,21 @@ public class SwordScript : MonoBehaviour
     bool CanDash = true;
     public float DashCoolDown;
     private float MaxDashCoolDown;
-    public TMP_Text Ability1Text;
     public float DashCharge = 1;
     public Outline BladeOutline;
     public Outline HandleOutline;
     KeyCode SwordDashBind;
+    TMP_Text SwordDashText;
+
 
     [Header("Omni Dash")]
     public float OmniDashPower;
     bool CanOmniDash = true;
     public float OmniDashCoolDown;
     private float MaxOmniDashCoolDown;
-    public TMP_Text Ability2Text;
     public float OmniDashCharge = 1;
     KeyCode OmniDashBind;
+    TMP_Text OmniDashText;
 
     [Header("Multi Dash")]
     public float MultiDashPower;
@@ -59,6 +61,7 @@ public class SwordScript : MonoBehaviour
     bool ExtraMultiFloat = false;
     float MiniMultiDashCoolDown = 1;
     KeyCode MultiDashBind;
+    TMP_Text MultiDashText;
 
     [Header("Ground Slam")]
     public float GroundSlamForce;
@@ -70,17 +73,26 @@ public class SwordScript : MonoBehaviour
     public bool CanDoubleJump = false;
     PlayerMovement PlayerMovement;
 
+
     [Header("Enemy Leap")]
-    KeyCode EnemyLeapBind;
     public float InitialDashTime;
+    KeyCode EnemyLeapBind;
     public float LeapForce;
+    public float LeapUpForce;
     Vector3 LeapStartPos;
     public float LeapRange;
-    public LayerMask EnemyLayer;
     float ElapsedTime;
     bool IsLeaping;
     Vector3 EnemyPos;
+    GameObject[] EnemyList;
+    public LayerMask EnemyLayer;
 
+    [Header("Grapple")]
+    LineRenderer LineRenderer;
+    KeyCode GrappleBind;
+    private Vector3 GrapplePoint;
+    public float MaxGrappleDistance;
+    public Transform SwordTip;
 
     // Start is called before the first frame update
     void Start()
@@ -93,6 +105,8 @@ public class SwordScript : MonoBehaviour
         MaxMultiDashCoolDown = MultiDashCoolDown;
         MaxMultiAirTime = MultiAirTime;
         PlayerMovement = transform.GetComponent<PlayerMovement>();
+        EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        LineRenderer = GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -142,25 +156,32 @@ public class SwordScript : MonoBehaviour
         if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
         {
             SwordDashBind = KeyCode.Q;
+            SwordDashText = Ability1Text; 
         }
         else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
         {
             SwordDashBind = KeyCode.E;
+            SwordDashText = Ability2Text;
         }
         else
         {
             SwordDashBind = KeyCode.None;
+            SwordDashText = null;
         }
+
+        if (SwordDashText != null && DashCoolDown <= 0)
+            SwordDashText.text = ("Sword Dash: Ready");
 
         if (CanDash == false)
         {
             DashCoolDown -= Time.deltaTime;
-            Ability1Text.text = ("Sword Dash: " + Mathf.Round(DashCoolDown * 1000) / 1000);
+            if (SwordDashText != null)
+                SwordDashText.text = ("Sword Dash: " + Mathf.Round(DashCoolDown * 1000) / 1000);
             if (DashCoolDown < 0)
             {
                 CanDash = true;
                 DashCoolDown = 0;
-                Ability1Text.text = ("Sword Dash: Ready");
+                SwordDashText.text = ("Sword Dash: Ready");
             }
         }
 
@@ -227,25 +248,32 @@ public class SwordScript : MonoBehaviour
         if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Omni Dash")
         {
             OmniDashBind = KeyCode.Q;
+            OmniDashText = Ability1Text;
         }
         else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Omni Dash")
         {
             OmniDashBind = KeyCode.E;
+            OmniDashText = Ability2Text;
         }
         else
         {
             OmniDashBind = KeyCode.None;
+            OmniDashText = null;
         }
+
+        if (OmniDashText != null && OmniDashCoolDown <= 0)
+            OmniDashText.text = ("Omni Dash: Ready");
 
         if (CanOmniDash == false)
         {
             OmniDashCoolDown -= Time.deltaTime;
-            Ability2Text.text = ("Omni Dash: " + Mathf.Round(OmniDashCoolDown * 1000) / 1000);
+            if (OmniDashText != null)
+                OmniDashText.text = ("Omni Dash: " + Mathf.Round(OmniDashCoolDown * 1000) / 1000);
             if (OmniDashCoolDown < 0)
             {
                 CanOmniDash = true;
                 OmniDashCoolDown = 0;
-                Ability2Text.text = ("Omni Dash: Ready");
+                OmniDashText.text = ("Omni Dash: Ready");
             }
         }
 
@@ -310,17 +338,21 @@ public class SwordScript : MonoBehaviour
         if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
         {
             MultiDashBind = KeyCode.Q;
+            MultiDashText = Ability1Text;
         }
         else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
         {
             MultiDashBind = KeyCode.E;
+            MultiDashText = Ability2Text;
         }
         else
         {
             MultiDashBind = KeyCode.None;
+            MultiDashText = null;
         }
 
-        
+        if (MultiDashText != null && MultiDashCoolDown <= 0)
+            MultiDashText.text = ("Multi Dash: Ready");
 
         if (MultiFloat == true)
         {
@@ -344,13 +376,14 @@ public class SwordScript : MonoBehaviour
         if (CanMultiDash == false)
         {
             MultiDashCoolDown -= Time.deltaTime;
-            Ability2Text.text = ("Multi Dash: " + Mathf.Round(MultiDashCoolDown * 1000) / 1000);
+            if (MultiDashText != null)
+                MultiDashText.text = ("Multi Dash: " + Mathf.Round(MultiDashCoolDown * 1000) / 1000);
             if (MultiDashCoolDown < 0)
             {
                 MultiFloat = false;
                 CanMultiDash = true;
                 MultiDashCoolDown = 0;
-                Ability2Text.text = ("Multi Dash: Ready");
+                MultiDashText.text = ("Multi Dash: Ready");
             }
         }
 
@@ -415,7 +448,7 @@ public class SwordScript : MonoBehaviour
         {
 
             
-            rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
+            rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f) * 2, ForceMode.Impulse);
             CanMultiDash = false;
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
@@ -493,34 +526,70 @@ public class SwordScript : MonoBehaviour
 
         }
 
+        /*
         Collider[] LeapCollider = Physics.OverlapSphere(transform.position, LeapRange);
         for (int i = 0, n = LeapCollider.Length; i < n; i++)
         {
 
             if (LeapCollider[i].gameObject.layer == EnemyLayer)
-                print(LeapCollider[i].transform.position);
-            EnemyPos = LeapCollider[i].transform.position;
-            print(EnemyPos);
+                //print(LeapCollider[i].transform.position);
+                EnemyPos = LeapCollider[i].transform.localPosition;
+                print(EnemyPos);
 
         }
+        */
+        
+        GameObject nearestEnemy = EnemyList[0];
+        float DistanceToNearest = Vector3.Distance(transform.position, nearestEnemy.transform.position);
+
+        for (int i = 1; i < EnemyList.Length; i++)
+        {
+            float DistanceToCurrent = Vector3.Distance(transform.position, EnemyList[i].transform.position);
+
+            if (DistanceToCurrent < DistanceToNearest)
+            {
+                nearestEnemy = EnemyList[i];
+                DistanceToNearest = DistanceToCurrent;
+            }
+
+
+        }
+
+        EnemyPos = nearestEnemy.transform.position; 
 
         if (IsLeaping)
         {
             ElapsedTime += Time.deltaTime;
             float PercentComplete = ElapsedTime / InitialDashTime;
-            
-            
-            //print(EnemyPos);
-            //print(LeapStartPos);
             transform.position = Vector3.Lerp(LeapStartPos, EnemyPos, PercentComplete);
-            
+            BasicHitbox.GetComponent<Collider>().enabled = true;
+            IsSwinging = true;
+
         }
         if (ElapsedTime > InitialDashTime)
         {
             IsLeaping = false;
             ElapsedTime = 0;
+            rb.AddForce(((transform.forward * LeapForce) + (transform.up * LeapUpForce)), ForceMode.Impulse);
+
         }
-            
+
+
+
+        /////////////////////////////////////// Grapple Logic //////////////////////////
+
+        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Grapple")
+        {
+            GrappleBind = KeyCode.Q;
+        }
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Grapple ")
+        {
+            GrappleBind = KeyCode.E;
+        }
+        else
+        {
+            GrappleBind = KeyCode.None;
+        }
 
 
 
@@ -531,17 +600,6 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /*
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            StartAbility1();
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            StartAbility2();
-        }
-
-        */
 
 
     }
@@ -579,34 +637,26 @@ public class SwordScript : MonoBehaviour
 
     public bool EnemyInRange()
     {
-        return Physics.CheckSphere(transform.position, LeapRange, EnemyLayer);
+        return Physics.CheckSphere(transform.position, LeapRange,  EnemyLayer);
     }
 
-    /*
-    void StartAbility1()
+    private void StartGrapple()
     {
-       
-        for (int i = 0; i < 8; i++) 
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.position, Camera.forward, out hit, MaxGrappleDistance))
         {
-            if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == Abilities[i])
-            {
-                print(Abilities[i]);
+            GrapplePoint = hit.point;
+            Joint joint = transform.AddComponent<SpringJoint>();
+            joint.autoConfigureConnectedAnchor = false;
+            joint.connectedAnchor = GrapplePoint;
 
-            }
         }
     }
-    void StartAbility2() 
+    
+    private void StopGrapple()
     {
-        for (int i = 0; i < 8; i++)
-        {
-            if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == Abilities[i])
-            {
-                print(Abilities[i]);
-            }
-        }
+
     }
 
-
-    */
 
 }
