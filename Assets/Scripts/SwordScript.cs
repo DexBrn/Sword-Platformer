@@ -731,18 +731,30 @@ public class SwordScript : MonoBehaviour
     
     private void SpawnSwords()
     {
+        //return;
         Vector3 SpawnSpot = new Vector3(1.4f, 0.7f, 0);
         for (float i = 1; i < 7; i++)
         {
             if (i < 4)
             {
-                SpawnSpot.y = i / 10;
                 
+                SpawnSpot.y -= 0.4f;
+                print(SpawnSpot.y);
+
             }
-            SpawnSpot.x = i / 10;
+            if (i == 4)
+                SpawnSpot.x = -SpawnSpot.x;
+                SpawnSpot.y = 0.7f;
+            if (i >= 4)
+            {
+                SpawnSpot.y -= 0.4f;
+            }
+
+            
             Transform SpawnedSword = Instantiate(SummonSwordPrefab, transform);
             SpawnedSword.localPosition = SpawnSpot;
             SpawnedSword.localRotation = Quaternion.Euler(0, -90, 0);
+            
         }
             
 
