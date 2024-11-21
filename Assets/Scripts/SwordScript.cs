@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
 public class SwordScript : MonoBehaviour
 {
     Rigidbody rb;
@@ -94,6 +93,10 @@ public class SwordScript : MonoBehaviour
     public float MaxGrappleDistance;
     public Transform SwordTip;
     public Transform KatanaHolder;
+
+    [Header("Summon Swords")]
+    KeyCode SummonSwordBind;
+    public Transform SummonSwordPrefab;
 
 
     // Start is called before the first frame update
@@ -602,9 +605,30 @@ public class SwordScript : MonoBehaviour
         }
         if (Input.GetKeyUp(GrappleBind))
             StopGrapple();
-        
 
-        
+
+
+        /////////////////////////////////////// Summon Swords Logic //////////////////////////
+
+        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Summon Swords")
+        {
+            SummonSwordBind = KeyCode.Q;
+        }
+        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Summon Swords")
+        {
+            SummonSwordBind = KeyCode.E;
+        }
+        else
+        {
+            SummonSwordBind = KeyCode.None;
+        }
+
+        if (Input.GetKeyDown(SummonSwordBind))
+        {
+            SpawnSwords();
+
+        }
+
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -705,6 +729,27 @@ public class SwordScript : MonoBehaviour
     }
 
     
+    private void SpawnSwords()
+    {
+        Vector3 SpawnSpot = new Vector3(1.4f, 0.7f, 0);
+        for (float i = 1; i < 7; i++)
+        {
+            if (i < 4)
+            {
+                SpawnSpot.y = i / 10;
+                
+            }
+            SpawnSpot.x = i / 10;
+            Transform SpawnedSword = Instantiate(SummonSwordPrefab, transform);
+            SpawnedSword.localPosition = SpawnSpot;
+            SpawnedSword.localRotation = Quaternion.Euler(0, -90, 0);
+        }
+            
+
+    }
+
+
+
 
 
 }
