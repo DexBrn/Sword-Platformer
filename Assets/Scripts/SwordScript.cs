@@ -531,19 +531,6 @@ public class SwordScript : MonoBehaviour
 
         }
 
-        /*
-        Collider[] LeapCollider = Physics.OverlapSphere(transform.position, LeapRange);
-        for (int i = 0, n = LeapCollider.Length; i < n; i++)
-        {
-
-            if (LeapCollider[i].gameObject.layer == EnemyLayer)
-                //print(LeapCollider[i].transform.position);
-                EnemyPos = LeapCollider[i].transform.localPosition;
-                print(EnemyPos);
-
-        }
-        */
-        
         GameObject nearestEnemy = EnemyList[0];
         float DistanceToNearest = Vector3.Distance(transform.position, nearestEnemy.transform.position);
 
@@ -623,7 +610,7 @@ public class SwordScript : MonoBehaviour
             SummonSwordBind = KeyCode.None;
         }
 
-        if (Input.GetKeyDown(SummonSwordBind))
+        if (Input.GetKeyDown(SummonSwordBind) && EnemyInRange())
         {
             SpawnSwords();
 
@@ -732,25 +719,31 @@ public class SwordScript : MonoBehaviour
     private void SpawnSwords()
     {
         //return;
-        Vector3 SpawnSpot = new Vector3(1.4f, 0.7f, 0);
+        Vector3 SpawnSpot = new Vector3(1.4f, 1.1f, 0);
         for (float i = 1; i < 7; i++)
         {
+            
             if (i < 4)
             {
                 
-                SpawnSpot.y -= 0.4f;
-                print(SpawnSpot.y);
+                SpawnSpot.y = SpawnSpot.y - 0.4f;
+               ///print(SpawnSpot.y);
 
             }
             if (i == 4)
                 SpawnSpot.x = -SpawnSpot.x;
-                SpawnSpot.y = 0.7f;
+                //SpawnSpot.y = 0.7f;
             if (i >= 4)
             {
-                SpawnSpot.y -= 0.4f;
+                if (SpawnSpot.y <= -0.09f)
+                {
+                    print("Lop");
+                    SpawnSpot.y = 1.1f;
+                }
+                    
+                SpawnSpot.y = SpawnSpot.y - 0.4f;
             }
 
-            
             Transform SpawnedSword = Instantiate(SummonSwordPrefab, transform);
             SpawnedSword.localPosition = SpawnSpot;
             SpawnedSword.localRotation = Quaternion.Euler(0, -90, 0);
