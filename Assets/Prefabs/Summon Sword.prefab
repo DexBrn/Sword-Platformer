@@ -178,6 +178,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Summon Sword
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 745e41815159d6f40ab6860f91e4a2ca, type: 3}
+      propertyPath: m_TagString
+      value: SummonSword
+      objectReference: {fileID: 0}
     - target: {fileID: 3566390031902043909, guid: 745e41815159d6f40ab6860f91e4a2ca, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

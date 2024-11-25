@@ -4514,6 +4514,7 @@ MonoBehaviour:
   SwordTip: {fileID: 1649743268}
   KatanaHolder: {fileID: 2019044451}
   SummonSwordPrefab: {fileID: 5150507258874863696, guid: c6dfecc1e42e6934bbf9acef4f220a3d, type: 3}
+  InitialSwordFireTime: 5
 --- !u!114 &624625997
 MonoBehaviour:
   m_ObjectHideFlags: 0

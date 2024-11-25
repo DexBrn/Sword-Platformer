@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+
 
 public class SwordScript : MonoBehaviour
 {
@@ -97,7 +99,12 @@ public class SwordScript : MonoBehaviour
     [Header("Summon Swords")]
     KeyCode SummonSwordBind;
     public Transform SummonSwordPrefab;
-
+    bool SwordFiring = false;
+    public float InitialSwordFireTime;
+    float SummonSwordElapsedTime;
+    GameObject[] SwordList;
+    Vector3 EnemyPosS;
+    float PercentCompleteSword;
 
     // Start is called before the first frame update
     void Start()
@@ -111,6 +118,7 @@ public class SwordScript : MonoBehaviour
         MaxMultiAirTime = MultiAirTime;
         PlayerMovement = transform.GetComponent<PlayerMovement>();
         EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        SwordList = GameObject.FindGameObjectsWithTag("Enemy");
         LineRenderer = GetComponent<LineRenderer>();
     }
 
@@ -120,7 +128,7 @@ public class SwordScript : MonoBehaviour
 
         ////////////////////////////// Basic Attack //////////////////////////////
         ///
-        
+
         if (!CanAttack)
         {
             AttackCooldown -= Time.deltaTime;
@@ -161,7 +169,7 @@ public class SwordScript : MonoBehaviour
         if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
         {
             SwordDashBind = KeyCode.Q;
-            SwordDashText = Ability1Text; 
+            SwordDashText = Ability1Text;
         }
         else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
         {
@@ -199,8 +207,8 @@ public class SwordScript : MonoBehaviour
             ColorUtility.TryParseHtmlString("#FFD500", out ChargeTwoColour);
             ColorUtility.TryParseHtmlString("#FF9600", out MaxChargeColour);
             DashCharge += Time.deltaTime;
-            
-            
+
+
             BladeOutline.OutlineWidth += Time.deltaTime * 3;
             HandleOutline.OutlineWidth += Time.deltaTime * 3;
 
@@ -216,12 +224,12 @@ public class SwordScript : MonoBehaviour
             {
                 BladeOutline.OutlineColor = ChargeTwoColour;
                 HandleOutline.OutlineColor = ChargeTwoColour;
-                
+
             }
 
             if (DashCharge > 3)
             {
-                
+
                 BladeOutline.OutlineColor = MaxChargeColour;
                 HandleOutline.OutlineColor = MaxChargeColour;
                 DashCharge = 3;
@@ -300,7 +308,7 @@ public class SwordScript : MonoBehaviour
             {
                 BladeOutline.OutlineColor = ChargeOneColour;
                 HandleOutline.OutlineColor = ChargeOneColour;
-               
+
             }
 
             if (OmniDashCharge > 2)
@@ -361,14 +369,14 @@ public class SwordScript : MonoBehaviour
 
         if (MultiFloat == true)
         {
-            
+
             rb.useGravity = false;
             //rb.velocity = Vector3.zero;
             MiniMultiDashCoolDown -= Time.deltaTime;
             if (MiniMultiDashCoolDown > 0)
                 ExtraMultiFloat = true;
             MultiAirTime -= Time.deltaTime;
-            
+
             if (MultiAirTime < 0)
             {
                 MultiFloat = false;
@@ -434,8 +442,8 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyUp(MultiDashBind) && CanMultiDash && !MultiFloat)
         {
             rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
-            
-            
+
+
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
             MultiAirTime = MaxMultiAirTime;
@@ -452,7 +460,7 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyDown(MultiDashBind) && CanMultiDash && MultiFloat)
         {
 
-            
+
             rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f) * 2, ForceMode.Impulse);
             CanMultiDash = false;
             BasicHitbox.GetComponent<Collider>().enabled = true;
@@ -481,7 +489,7 @@ public class SwordScript : MonoBehaviour
         {
             DoubleJumpBind = KeyCode.E;
             AltDoubleJumpBind = KeyCode.Space;
-           
+
         }
         else
         {
@@ -519,14 +527,14 @@ public class SwordScript : MonoBehaviour
             EnemyLeapBind = KeyCode.None;
         }
 
-        
+
 
 
         if (Input.GetKeyDown(EnemyLeapBind) && EnemyInRange())
         {
             GetCurrentPosition();
             IsLeaping = true;
-            
+
 
 
         }
@@ -547,7 +555,7 @@ public class SwordScript : MonoBehaviour
 
         }
 
-        EnemyPos = nearestEnemy.transform.position; 
+        EnemyPos = nearestEnemy.transform.position;
 
         if (IsLeaping)
         {
@@ -583,12 +591,12 @@ public class SwordScript : MonoBehaviour
             GrappleBind = KeyCode.None;
         }
 
-        
+
 
         if (Input.GetKeyDown(GrappleBind))
         {
             StartGrapple();
-            
+
         }
         if (Input.GetKeyUp(GrappleBind))
             StopGrapple();
@@ -615,6 +623,59 @@ public class SwordScript : MonoBehaviour
             SpawnSwords();
 
         }
+
+
+
+        EnemyPos = nearestEnemy.transform.position;
+
+        if (SwordFiring)
+        {
+            SummonSwordElapsedTime += Time.deltaTime;
+            PercentCompleteSword = SummonSwordElapsedTime / InitialSwordFireTime;
+            //print(SummonSwordElapsedTime);
+            if (PercentCompleteSword >= 1) 
+            {
+                print("Check");
+                SwordFiring = false;
+                SummonSwordElapsedTime = 0f;
+                PercentCompleteSword = 0;
+            }
+        }
+
+        if (SwordFiring)
+        {
+            
+
+            for (int i = 1; i < 7; i++)
+            {
+
+                if (SwordFiring)
+                {
+
+                    LeapStartPos = SwordList[i].transform.position;
+                    SwordList[i].transform.position = Vector3.Lerp(LeapStartPos, EnemyPosS, PercentCompleteSword);
+                    SwordList[i].GetComponentInChildren<Collider>().enabled = true;
+                    
+                }
+                if (SummonSwordElapsedTime > InitialDashTime)
+                {
+
+                    ElapsedTime = 0;
+                    print(SwordList[i]);
+                    Destroy(SwordList[i]);
+
+                }
+
+
+            }
+
+            //SwordFiring = false;
+
+        }
+
+
+
+
 
 
 
@@ -652,17 +713,17 @@ public class SwordScript : MonoBehaviour
 
     private void GetCurrentPosition()
     {
-        LeapStartPos = transform.position; 
+        LeapStartPos = transform.position;
     }
 
     public bool EnemyInRange()
     {
-        return Physics.CheckSphere(transform.position, LeapRange,  EnemyLayer);
+        return Physics.CheckSphere(transform.position, LeapRange, EnemyLayer);
     }
 
     private void StartGrapple()
     {
-        
+
         RaycastHit hit;
         if (Physics.Raycast(Camera.position, Camera.forward, out hit, MaxGrappleDistance))
         {
@@ -687,9 +748,9 @@ public class SwordScript : MonoBehaviour
 
     private void LateUpdate()
     {
-        
+
         DrawGrapple();
-        
+
     }
 
     void DrawGrapple()
@@ -701,12 +762,12 @@ public class SwordScript : MonoBehaviour
             return;
 
         }
-            
-            
+
+
         LineRenderer.SetPosition(0, SwordTip.position);
         LineRenderer.SetPosition(1, GrapplePoint);
         KatanaHolder.LookAt(GrapplePoint);
-        
+
     }
 
     private void StopGrapple()
@@ -715,45 +776,55 @@ public class SwordScript : MonoBehaviour
         Destroy(transform.gameObject.GetComponent<SpringJoint>());
     }
 
-    
+
     private void SpawnSwords()
     {
         //return;
         Vector3 SpawnSpot = new Vector3(1.4f, 1.1f, 0);
-        for (float i = 1; i < 7; i++)
+        for (int i = 1; i < 7; i++)
         {
-            
+
             if (i < 4)
             {
-                
+
                 SpawnSpot.y = SpawnSpot.y - 0.4f;
-               ///print(SpawnSpot.y);
+                ///print(SpawnSpot.y);
 
             }
             if (i == 4)
                 SpawnSpot.x = -SpawnSpot.x;
-                //SpawnSpot.y = 0.7f;
+            //SpawnSpot.y = 0.7f;
             if (i >= 4)
             {
                 if (SpawnSpot.y <= -0.09f)
                 {
-                    print("Lop");
                     SpawnSpot.y = 1.1f;
                 }
-                    
+
                 SpawnSpot.y = SpawnSpot.y - 0.4f;
             }
 
             Transform SpawnedSword = Instantiate(SummonSwordPrefab, transform);
             SpawnedSword.localPosition = SpawnSpot;
             SpawnedSword.localRotation = Quaternion.Euler(0, -90, 0);
-            
+
+
         }
-            
+        Array.Clear(SwordList, 0, SwordList.Length);
+        SwordList = GameObject.FindGameObjectsWithTag("SummonSword");
+
+
+        SwordFiring = true;
+        SaveEnemyPos();
+        print(SwordFiring);
+
 
     }
 
-
+    private void SaveEnemyPos()
+    {
+        EnemyPosS = EnemyPos;
+    }
 
 
 
