@@ -51,7 +51,7 @@ public class Timer : MonoBehaviour
 
 
 
-        if (IsEnding())
+        if (IsEnding() && TimerRunning)
         {
             TimerRunning = false;
             GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
