@@ -653,6 +653,7 @@ public class SwordScript : MonoBehaviour
                 {
 
                     LeapStartPos = SwordList[i].transform.position;
+                    SwordList[i].transform.LookAt(EnemyPosS);
                     SwordList[i].transform.position = Vector3.Lerp(LeapStartPos, EnemyPosS, PercentCompleteSword);
                     SwordList[i].GetComponentInChildren<Collider>().enabled = true;
                     
@@ -661,7 +662,6 @@ public class SwordScript : MonoBehaviour
                 {
 
                     ElapsedTime = 0;
-                    print(SwordList[i]);
                     Destroy(SwordList[i]);
 
                 }
@@ -758,7 +758,7 @@ public class SwordScript : MonoBehaviour
         if (!transform.gameObject.GetComponent<SpringJoint>())
         {
             //KatanaHolder.localRotation =  Quaternion.Euler(0, -90, 0);
-            KatanaHolder.localRotation = Quaternion.Lerp(KatanaHolder.localRotation, Quaternion.Euler(0, -90, 0), Time.deltaTime * 5);
+            KatanaHolder.localRotation = Quaternion.Lerp(KatanaHolder.localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 5);
             return;
 
         }
