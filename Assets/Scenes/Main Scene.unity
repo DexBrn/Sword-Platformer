@@ -6367,6 +6367,8 @@ MonoBehaviour:
   MaxSlopeAngle: 60
   SlopePushdownForce: 1000
   ExitingSlope: 0
+  JumpAudio: {fileID: 8300000, guid: f4a6f92bcf1dc0a488ddef0953c6b50f, type: 3}
+  RunningAudio: {fileID: 8300000, guid: 12d34cb2aa4689d47bfb480ccbd0e31a, type: 3}
 --- !u!114 &624625996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6429,6 +6431,7 @@ MonoBehaviour:
   GroundSlam: {fileID: 8300000, guid: 0326fcebba5db8b458ab4f483df0a87f, type: 3}
   SwordCharge: {fileID: 8300000, guid: 8b47109d257697a4392734948d359d38, type: 3}
   DoubleJump: {fileID: 8300000, guid: 82fea34bee56fcd4f87334f43164afc6, type: 3}
+  SummonSword: {fileID: 8300000, guid: 0a798107b6929d24aaf44b262ba9bb89, type: 3}
 --- !u!114 &624625997
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -114,6 +114,7 @@ public class SwordScript : MonoBehaviour
     public AudioClip GroundSlam;
     public AudioClip SwordCharge;
     public AudioClip DoubleJump;
+    public AudioClip SummonSword;
     AudioSource audioSource;
 
 
@@ -649,7 +650,7 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyDown(SummonSwordBind) && EnemyInRange())
         {
             SpawnSwords();
-
+            audioSource.PlayOneShot(SummonSword, 1f);
         }
 
 
@@ -663,7 +664,6 @@ public class SwordScript : MonoBehaviour
             //print(SummonSwordElapsedTime);
             if (PercentCompleteSword >= 1) 
             {
-                print("Check");
                 SwordFiring = false;
                 SummonSwordElapsedTime = 0f;
                 PercentCompleteSword = 0;
@@ -679,7 +679,7 @@ public class SwordScript : MonoBehaviour
 
                 if (SwordFiring)
                 {
-
+                    
                     LeapStartPos = SwordList[i].transform.position;
                     SwordList[i].transform.LookAt(EnemyPosS);
                     SwordList[i].transform.position = Vector3.Lerp(LeapStartPos, EnemyPosS, PercentCompleteSword);
@@ -845,7 +845,6 @@ public class SwordScript : MonoBehaviour
 
         SwordFiring = true;
         SaveEnemyPos();
-        print(SwordFiring);
 
 
     }

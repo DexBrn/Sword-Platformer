@@ -66,6 +66,14 @@ public class PlayerMovement : MonoBehaviour
     RaycastHit SlopeHit;
     public float SlopePushdownForce;
     public bool ExitingSlope = false;
+
+    [Header("Audio")]
+    public AudioClip JumpAudio;
+    public AudioClip RunningAudio;
+    AudioSource audioSource;
+    bool RunningAudioPlaying = false;
+    bool StopRunningAudio = false;
+
     ///////////////////////////////////////
 
 
@@ -77,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         StartYScale = transform.localScale.y;
         CameraStartPos = Camera.localPosition;
+        audioSource = GetComponent<AudioSource>();
     }
 
     
@@ -85,6 +94,19 @@ public class PlayerMovement : MonoBehaviour
         float Horizontal = Input.GetAxis("Horizontal");
         float Vertical = Input.GetAxis("Vertical");
         Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+
+        if (rb.velocity.magnitude > 0 && IsSliding == false && IsGrounded())
+        {
+            StopRunningAudio = false;
+            RunningAudioManager();
+        }
+        else if (!IsGrounded() || IsSliding == true || rb.velocity.magnitude <= 0)
+        {
+            StopRunningAudio = true;
+            RunningAudioManager();
+        }
+
 
 
         MouseRotate.x += Input.GetAxis("Mouse X");
@@ -122,6 +144,7 @@ public class PlayerMovement : MonoBehaviour
             ExitingSlope = true;
             SwordScript SwordScript = transform.GetComponent<SwordScript>();
             SwordScript.CanDoubleJump = true;
+            audioSource.PlayOneShot(JumpAudio, 0.6f);
         }
 
         if (IsGrounded())
@@ -422,7 +445,20 @@ public class PlayerMovement : MonoBehaviour
     }
     
 
+    private void RunningAudioManager()
+    {
+        if (!RunningAudioPlaying && !StopRunningAudio)
+        {
+            audioSource.PlayOneShot(RunningAudio, 0.3f);
+            RunningAudioPlaying = true;
+        }
+        if (StopRunningAudio && RunningAudioPlaying)
+        {
+            audioSource.Stop();
+            RunningAudioPlaying = false;
+        }
 
+    }
 
 
 
