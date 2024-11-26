@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
@@ -74,6 +75,16 @@ public class MenuController : MonoBehaviour
         Application.Quit();
     }
 
+
+    public void TutorialTeleport()
+    {
+        transform.position = new Vector3 (-7031.598f, 32.203f, -86.91359f);
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene("Main Scene");
+    }
 
 
 

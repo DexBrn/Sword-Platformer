@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.Audio;
 
 
 public class SwordScript : MonoBehaviour
@@ -89,22 +90,32 @@ public class SwordScript : MonoBehaviour
 
 
     [Header("Grapple")]
+    public float MaxGrappleDistance;
     private Vector3 GrapplePoint;
     LineRenderer LineRenderer;
     KeyCode GrappleBind;
-    public float MaxGrappleDistance;
     public Transform SwordTip;
     public Transform KatanaHolder;
 
     [Header("Summon Swords")]
-    KeyCode SummonSwordBind;
     public Transform SummonSwordPrefab;
+    KeyCode SummonSwordBind;
     bool SwordFiring = false;
     public float InitialSwordFireTime;
     float SummonSwordElapsedTime;
     GameObject[] SwordList;
     Vector3 EnemyPosS;
     float PercentCompleteSword;
+
+    [Header("Audio")]
+    public AudioClip SwordSwing;
+    public AudioClip SwordHit;
+    public AudioClip SwordDash;
+    public AudioClip GroundSlam;
+    public AudioClip SwordCharge;
+    public AudioClip DoubleJump;
+    AudioSource audioSource;
+
 
     // Start is called before the first frame update
     void Start()
@@ -120,6 +131,7 @@ public class SwordScript : MonoBehaviour
         EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
         SwordList = GameObject.FindGameObjectsWithTag("Enemy");
         LineRenderer = GetComponent<LineRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -155,6 +167,10 @@ public class SwordScript : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && CanAttack && !IsSwinging)
         {
+            if (ShouldHit())
+                audioSource.PlayOneShot(SwordHit, 0.5f);
+            else
+                audioSource.PlayOneShot(SwordSwing);
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
             CanAttack = false;
@@ -207,6 +223,7 @@ public class SwordScript : MonoBehaviour
             ColorUtility.TryParseHtmlString("#FFD500", out ChargeTwoColour);
             ColorUtility.TryParseHtmlString("#FF9600", out MaxChargeColour);
             DashCharge += Time.deltaTime;
+            audioSource.PlayOneShot(SwordCharge, 0.05f);
 
 
             BladeOutline.OutlineWidth += Time.deltaTime * 3;
@@ -241,6 +258,8 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyUp(SwordDashBind) && CanDash)
         {
             rb.AddForce(((transform.forward * DashFowardPower) + (transform.up * DashUpPower)) * (DashCharge / 1.5f), ForceMode.Impulse);
+            audioSource.Stop();
+            audioSource.PlayOneShot(SwordDash, 3.5f * (DashCharge / 3.5f));
             CanDash = false;
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
@@ -299,7 +318,7 @@ public class SwordScript : MonoBehaviour
             ColorUtility.TryParseHtmlString("#FFD500", out ChargeTwoColour);
             ColorUtility.TryParseHtmlString("#FF9600", out MaxChargeColour);
             OmniDashCharge += Time.deltaTime;
-
+            audioSource.PlayOneShot(SwordCharge, 0.05f);
 
             BladeOutline.OutlineWidth += Time.deltaTime * 3;
             HandleOutline.OutlineWidth += Time.deltaTime * 3;
@@ -332,6 +351,8 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyUp(OmniDashBind) && CanOmniDash)
         {
             rb.AddForce(((Camera.forward * OmniDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
+            audioSource.Stop();
+            audioSource.PlayOneShot(SwordDash, 3.5f * (OmniDashCharge / 3.5f));
             CanOmniDash = false;
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
@@ -409,7 +430,7 @@ public class SwordScript : MonoBehaviour
             ColorUtility.TryParseHtmlString("#FFD500", out ChargeTwoColour);
             ColorUtility.TryParseHtmlString("#FF9600", out MaxChargeColour);
             MultiDashCharge += Time.deltaTime;
-
+            
 
             BladeOutline.OutlineWidth += Time.deltaTime * 3;
             HandleOutline.OutlineWidth += Time.deltaTime * 3;
@@ -420,12 +441,13 @@ public class SwordScript : MonoBehaviour
                 HandleOutline.OutlineColor = ChargeOneColour;
 
             }
-
+            if (MultiDashCharge > 1.5f)
+                audioSource.PlayOneShot(SwordCharge, 0.05f);
             if (MultiDashCharge > 2)
             {
                 BladeOutline.OutlineColor = ChargeTwoColour;
                 HandleOutline.OutlineColor = ChargeTwoColour;
-
+                
             }
 
             if (MultiDashCharge > 3)
@@ -442,7 +464,8 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyUp(MultiDashBind) && CanMultiDash && !MultiFloat)
         {
             rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f), ForceMode.Impulse);
-
+            audioSource.Stop(); 
+            audioSource.PlayOneShot(SwordDash, 3.5f * (MultiDashCharge / 3.5f));
 
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
@@ -462,6 +485,9 @@ public class SwordScript : MonoBehaviour
 
 
             rb.AddForce(((Camera.forward * MultiDashPower) + (transform.up * 0)) * (DashCharge / 1.5f) * 2, ForceMode.Impulse);
+            audioSource.Stop();
+            audioSource.Stop();
+            audioSource.PlayOneShot(SwordDash, 3.5f * (MultiDashCharge / 3.5f));
             CanMultiDash = false;
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
@@ -473,7 +499,7 @@ public class SwordScript : MonoBehaviour
             HandleOutline.OutlineWidth = 4;
             rb.useGravity = true;
             MultiFloat = false;
-
+            
         }
 
 
@@ -503,6 +529,7 @@ public class SwordScript : MonoBehaviour
             float JumpPower = PlayerMovement.JumpPower;
             rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
             CanDoubleJump = false;
+            audioSource.PlayOneShot(DoubleJump, 1f);
         }
 
         if (!PlayerMovement.IsGrounded() && CanDoubleJump && Input.GetKeyDown(DoubleJumpBind))
@@ -510,6 +537,7 @@ public class SwordScript : MonoBehaviour
             float JumpPower = PlayerMovement.JumpPower;
             rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
             CanDoubleJump = false;
+            audioSource.PlayOneShot(DoubleJump, 1f);
         }
 
         /////////////////////////////////////// Enemy Leap Logic //////////////////////////
@@ -707,6 +735,7 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKey(GroundSlamBind))
         {
             rb.AddForce(-transform.up * GroundSlamForce, ForceMode.Impulse);
+            audioSource.PlayOneShot(GroundSlam, 0.4f);
         }
     }
 
@@ -824,6 +853,11 @@ public class SwordScript : MonoBehaviour
     private void SaveEnemyPos()
     {
         EnemyPosS = EnemyPos;
+    }
+
+    bool ShouldHit()
+    {
+        return Physics.CheckSphere(BasicHitbox.position, 3f, EnemyLayer);
     }
 
 
