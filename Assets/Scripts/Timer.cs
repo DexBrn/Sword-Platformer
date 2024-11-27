@@ -17,6 +17,9 @@ public class Timer : MonoBehaviour
     public TMP_Text CompletedText;
     float ExtraTime;
 
+    public AudioSource MusicSource;
+    float StarterVolume;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +29,7 @@ public class Timer : MonoBehaviour
             LeaderboardText.text = ("Best Time:    " + Mathf.Round(PlayerPrefs.GetFloat("FastestTime") * 1000) / 1000);
             BestTime = PlayerPrefs.GetFloat("FastestTime");
         }
+        StarterVolume = MusicSource.volume;
             
     }
 
@@ -36,6 +40,7 @@ public class Timer : MonoBehaviour
         {
             Timed += Time.deltaTime;
             TimerText.text = ("" + Mathf.Round(Timed * 1000) / 1000);
+            MusicSource.volume = StarterVolume * 2;
         }
 
         if (IsStarting())
@@ -46,14 +51,16 @@ public class Timer : MonoBehaviour
             TimerRunning = false;
             transform.position = new Vector3(90, 3, -17);
             CompletedText.text = "";
+            MusicSource.volume = StarterVolume;
         }
             
-
+        
 
 
         if (IsEnding() && TimerRunning)
         {
             TimerRunning = false;
+            MusicSource.volume = StarterVolume;
             GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
             int EnemyCount = Enemies.Length;
             for (int i = 0; i < EnemyCount; i++)

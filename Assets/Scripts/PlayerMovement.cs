@@ -70,9 +70,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Audio")]
     public AudioClip JumpAudio;
     public AudioClip RunningAudio;
+    public AudioClip SlidingAudio;
+    public AudioClip AirSpeedAudio;
     AudioSource audioSource;
+    public AudioSource MovementSource;
     bool RunningAudioPlaying = false;
     bool StopRunningAudio = false;
+    bool SlidingAudioPlaying = false;
+    bool AirSpeedPlaying = false;
+    bool WallRunningAudio = false;
+
 
     ///////////////////////////////////////
 
@@ -91,6 +98,8 @@ public class PlayerMovement : MonoBehaviour
     
     void Update()
     {
+
+        ///////////////////////////////////////Moving///////////////////////////////////////////
         float Horizontal = Input.GetAxis("Horizontal");
         float Vertical = Input.GetAxis("Vertical");
         Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -101,14 +110,35 @@ public class PlayerMovement : MonoBehaviour
             StopRunningAudio = false;
             RunningAudioManager();
         }
+        else if (IsGrounded() && IsSliding == true && rb.velocity.magnitude > 0)
+        {
+            StopRunningAudio = false;
+            RunningAudioManager();
+        }
+        
         else if (!IsGrounded() || IsSliding == true || rb.velocity.magnitude <= 0)
         {
             StopRunningAudio = true;
             RunningAudioManager();
         }
+        else if (IsWallRunning &&  rb.velocity.magnitude > 0)
+        {
+            
+        }
+
+        if (!IsGrounded() && rb.velocity.magnitude > 0)
+        {
+            StopRunningAudio = false;
+            RunningAudioManager();
+        }
 
 
 
+
+
+
+        ////////////////////////////////Moving Camera///////////////////////////////////////////
+        ///
         MouseRotate.x += Input.GetAxis("Mouse X");
         MouseRotate.y += Input.GetAxis("Mouse Y");
 
@@ -123,8 +153,6 @@ public class PlayerMovement : MonoBehaviour
             MouseRotate.y = -60;
         }
 
-
-        ////////////////////////////////Moving Camera///////////////////////////////////////////
         if (!IsWallRunning)
         {
             
@@ -293,7 +321,9 @@ public class PlayerMovement : MonoBehaviour
             float WallX = transform.position.x;
             transform.position += transform.forward * WallRunForce / 100;
             //transform.position = new Vector3(WallX, transform.position.y, transform.position.z);
-
+            print("Send");
+            StopRunningAudio = false;
+            WallRunAudioManager();
         }
 
         if (Input.GetKey(KeyCode.Space) && WallForward)
@@ -449,15 +479,50 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!RunningAudioPlaying && !StopRunningAudio)
         {
-            audioSource.PlayOneShot(RunningAudio, 0.3f);
+            MovementSource.PlayOneShot(RunningAudio, 0.1f);
             RunningAudioPlaying = true;
         }
         if (StopRunningAudio && RunningAudioPlaying)
         {
-            audioSource.Stop();
+            MovementSource.Stop();
             RunningAudioPlaying = false;
+            SlidingAudioPlaying = false;
+            AirSpeedPlaying = false;
+            WallRunningAudio = false;
         }
+        if (!WallRunningAudio && !StopRunningAudio)
+        {
+            MovementSource.PlayOneShot(SlidingAudio, 0.35f);
+            WallRunningAudio = true;
+        }
+        if (!SlidingAudioPlaying && !StopRunningAudio)
+        {
+            MovementSource.PlayOneShot(SlidingAudio, 0.35f);
+            SlidingAudioPlaying = true;
+        }
+        if (!AirSpeedPlaying && !StopRunningAudio)
+        {
+            //print("Slop");
+            //MovementSource.PlayOneShot(AirSpeedAudio, 1f);
+            AirSpeedPlaying = true;
+        }  
+    }
 
+
+
+    private void WallRunAudioManager()
+    {
+        if (!WallRunningAudio && !StopRunningAudio)
+        {
+            print("Lop");
+            MovementSource.PlayOneShot(SlidingAudio, 0.35f);
+            WallRunningAudio = true;
+        }
+        if (StopRunningAudio && RunningAudioPlaying)
+        {
+            MovementSource.Stop();
+            WallRunningAudio = false;
+        }
     }
 
 

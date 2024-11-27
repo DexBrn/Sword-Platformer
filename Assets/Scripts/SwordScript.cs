@@ -115,6 +115,7 @@ public class SwordScript : MonoBehaviour
     public AudioClip SwordCharge;
     public AudioClip DoubleJump;
     public AudioClip SummonSword;
+    public AudioClip EnemyLeap;
     AudioSource audioSource;
 
 
@@ -563,8 +564,8 @@ public class SwordScript : MonoBehaviour
         {
             GetCurrentPosition();
             IsLeaping = true;
-
-
+            audioSource.PlayOneShot(EnemyLeap, 0.15f);
+            //audioSource.PlayOneShot(DoubleJump, 0.7f);
 
         }
 
@@ -625,7 +626,7 @@ public class SwordScript : MonoBehaviour
         if (Input.GetKeyDown(GrappleBind))
         {
             StartGrapple();
-
+            audioSource.PlayOneShot(DoubleJump, 1f);
         }
         if (Input.GetKeyUp(GrappleBind))
             StopGrapple();
@@ -766,9 +767,9 @@ public class SwordScript : MonoBehaviour
             joint.maxDistance = DistanceFromPoint * 0.8f;
             joint.minDistance = DistanceFromPoint * 0.25f;
 
-            joint.spring = 30.5f;
+            joint.spring = 60.5f;
             joint.damper = 3;
-            joint.massScale = 9.5f;
+            joint.massScale = 10.5f;
 
             LineRenderer.positionCount = 2;
 
