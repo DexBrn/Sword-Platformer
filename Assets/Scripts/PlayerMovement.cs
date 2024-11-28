@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     public float SlideForce;
     private float SlideTimer;
 
+    public GameObject MainGuy;
+
     float Horizontal;
     float Vertical;
 
@@ -259,6 +261,7 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         Frictionless.staticFriction = 1;
         SlideTimer = MaxSlideTime;
+        
     }
 
     private void StopSlide()
@@ -267,6 +270,7 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x, StartYScale, transform.localScale.z);
         Frictionless.staticFriction = BaseFriction;
         JumpPower = 75;
+        MainGuy.transform.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
     private void SlidingMovement()
@@ -341,11 +345,21 @@ public class PlayerMovement : MonoBehaviour
             WallRunAudioManager();
         }
 
+
+        //////////////////////////Climbing///////////////////////////////
         if (Input.GetKey(KeyCode.Space) && WallForward)
         {
-
+            PlayClimbAnim();
             transform.position += transform.up * WallClimbSpeed / 1000;
         }
+        if (!WallForward)
+        {
+            animator.SetBool("IsClimbing", false);
+        }
+
+
+
+
 
         if (IsSliding)
         {
@@ -557,6 +571,7 @@ public class PlayerMovement : MonoBehaviour
         if (animator.GetBool("IsSliding") == true)
             return;
 
+        MainGuy.transform.localRotation = Quaternion.Euler(0, 90, 0);
         animator.SetBool("IsSliding", true);
     }
 
@@ -568,7 +583,13 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsFalling", true);
     }
 
-    
+    private void PlayClimbAnim()
+    {
+        if (animator.GetBool("IsClimbing") == true)
+            return;
+
+        animator.SetBool("IsClimbing", true);
+    }
 
 }
 
