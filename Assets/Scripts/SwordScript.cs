@@ -10,6 +10,7 @@ public class SwordScript : MonoBehaviour
 {
     Rigidbody rb;
     public Transform Camera;
+    Animator animator;
 
     public string[] Abilities;
     public Transform SelectedAbility1;
@@ -134,6 +135,7 @@ public class SwordScript : MonoBehaviour
         SwordList = GameObject.FindGameObjectsWithTag("Enemy");
         LineRenderer = GetComponent<LineRenderer>();
         audioSource = GetComponent<AudioSource>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -163,6 +165,7 @@ public class SwordScript : MonoBehaviour
                 IsSwinging = false;
                 BasicHitbox.GetComponent<Collider>().enabled = false;
                 AttackDuration = MaxAttackDuration;
+                animator.SetBool("IsSlashing", false);
             }
         }
 
@@ -173,6 +176,7 @@ public class SwordScript : MonoBehaviour
                 audioSource.PlayOneShot(SwordHit, 0.5f);
             else
                 audioSource.PlayOneShot(SwordSwing);
+            PlaySlashAnim();
             BasicHitbox.GetComponent<Collider>().enabled = true;
             IsSwinging = true;
             CanAttack = false;
@@ -737,6 +741,7 @@ public class SwordScript : MonoBehaviour
         {
             rb.AddForce(-transform.up * GroundSlamForce, ForceMode.Impulse);
             audioSource.PlayOneShot(GroundSlam, 0.4f);
+            PlayGroundSlamAnim();
         }
     }
 
@@ -860,6 +865,20 @@ public class SwordScript : MonoBehaviour
         return Physics.CheckSphere(BasicHitbox.position, 3f, EnemyLayer);
     }
 
+    private void PlayGroundSlamAnim()
+    {
+        if (animator.GetBool("IsGroundSlam") == true)
+            return;
 
+        animator.SetBool("IsGroundSlam", true);
+    }
+
+    private void PlaySlashAnim()
+    {
+        if (animator.GetBool("IsSlashing") == true)
+            return;
+
+        animator.SetBool("IsSlashing", true);
+    }
 
 }

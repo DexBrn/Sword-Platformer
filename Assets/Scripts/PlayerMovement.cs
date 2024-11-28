@@ -80,7 +80,9 @@ public class PlayerMovement : MonoBehaviour
     bool AirSpeedPlaying = false;
     bool WallRunningAudio = false;
 
-
+    [Header("Animation")]
+    Animator animator;
+    bool ShouldJump = false;
     ///////////////////////////////////////
 
 
@@ -93,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
         StartYScale = transform.localScale.y;
         CameraStartPos = Camera.localPosition;
         audioSource = GetComponent<AudioSource>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     
@@ -167,20 +170,31 @@ public class PlayerMovement : MonoBehaviour
         ////////////////////////////////////////////Jump////////////////////////////////////////
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
+            
             //rb.velocity = new Vector3(rb.velocity.x + ExtraJumpSpeed, JumpPower, rb.velocity.y + ExtraJumpSpeed);
             rb.AddForce(transform.up * JumpPower, ForceMode.Impulse);
             ExitingSlope = true;
             SwordScript SwordScript = transform.GetComponent<SwordScript>();
             SwordScript.CanDoubleJump = true;
             audioSource.PlayOneShot(JumpAudio, 0.6f);
+            PlayJumpAnim();
         }
 
         if (IsGrounded())
         {
             SwordScript SwordScript = transform.GetComponent<SwordScript>();
             SwordScript.CanDoubleJump = true;
+            animator.SetBool("IsFalling", false);
+            animator.SetBool("IsGroundSlam", false);
+
         }
-            
+        
+        if (rb.velocity.y < -0.1f)
+        {
+            animator.SetBool("IsJumping", false);
+            PlayFallAnim();
+
+        }
 
         //////////////////////////////////////////////Slide///////////////////////////////////////////////
 
@@ -188,13 +202,14 @@ public class PlayerMovement : MonoBehaviour
         {
             StartSlide();
             //transform.localRotation = Quaternion.Euler(-27, MouseRotate.x, transform.rotation.z);
-            
+            PlaySlideAnim();
             
         }
 
         if (Input.GetButtonUp("Slide") && IsSliding)
         {
             StopSlide();
+            animator.SetBool("IsSliding", false);
         }
 
 
@@ -480,10 +495,12 @@ public class PlayerMovement : MonoBehaviour
         if (!RunningAudioPlaying && !StopRunningAudio)
         {
             MovementSource.PlayOneShot(RunningAudio, 0.1f);
+            animator.SetBool("IsRunning", true);
             RunningAudioPlaying = true;
         }
         if (StopRunningAudio && RunningAudioPlaying)
         {
+            animator.SetBool("IsRunning", false);
             MovementSource.Stop();
             RunningAudioPlaying = false;
             SlidingAudioPlaying = false;
@@ -492,6 +509,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (!WallRunningAudio && !StopRunningAudio)
         {
+            
             MovementSource.PlayOneShot(SlidingAudio, 0.35f);
             WallRunningAudio = true;
         }
@@ -525,9 +543,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void PlayJumpAnim()
+    {
+        if (animator.GetBool("IsJumping") == true)
+            return;
+        
+        animator.SetBool("IsJumping", true);
 
+    }
 
+    private void PlaySlideAnim()
+    {
+        if (animator.GetBool("IsSliding") == true)
+            return;
 
+        animator.SetBool("IsSliding", true);
+    }
+
+    private void PlayFallAnim()
+    {
+        if (animator.GetBool("IsFalling") == true)
+            return;
+
+        animator.SetBool("IsFalling", true);
+    }
+
+    
 
 }
 
