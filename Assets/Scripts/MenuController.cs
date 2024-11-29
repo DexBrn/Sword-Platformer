@@ -13,6 +13,10 @@ public class MenuController : MonoBehaviour
     public Transform AbilityPanel;
     string AbilityToSwitch;
     Transform MenuAbilityNum;
+    Texture IconToSwitch;
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -61,10 +65,11 @@ public class MenuController : MonoBehaviour
         else
         {
             AbilityPanel.gameObject.SetActive(false);
-            AbilityToSwitch = ThisButton.GetChild(0).GetComponent<TMP_Text>().text;
-            MenuAbilityNum.GetChild(0).GetComponent<TMP_Text>().text = AbilityToSwitch;
-            
-            
+            AbilityToSwitch = ThisButton.GetComponentInChildren<TMP_Text>().text;
+            IconToSwitch = ThisButton.GetComponentInChildren<RawImage>().texture;
+            MenuAbilityNum.GetComponentInChildren<TMP_Text>().text = AbilityToSwitch;
+            MenuAbilityNum.GetComponentInChildren<RawImage>().texture = IconToSwitch;
+
         }
     }
 

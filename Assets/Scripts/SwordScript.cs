@@ -188,12 +188,12 @@ public class SwordScript : MonoBehaviour
 
         ////////////////////////////////// Dash Logic ////////////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Sword Dash")
         {
             SwordDashBind = KeyCode.Q;
             SwordDashText = Ability1Text;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Sword Dash")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Sword Dash")
         {
             SwordDashBind = KeyCode.E;
             SwordDashText = Ability2Text;
@@ -283,12 +283,12 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Omni Dash Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Omni Dash")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Omni Dash")
         {
             OmniDashBind = KeyCode.Q;
             OmniDashText = Ability1Text;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Omni Dash")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Omni Dash")
         {
             OmniDashBind = KeyCode.E;
             OmniDashText = Ability2Text;
@@ -375,12 +375,12 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Multi Dash Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Multi Dash")
         {
             MultiDashBind = KeyCode.Q;
             MultiDashText = Ability1Text;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Multi Dash")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Multi Dash")
         {
             MultiDashBind = KeyCode.E;
             MultiDashText = Ability2Text;
@@ -512,12 +512,12 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Double Jump Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Double Jump")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Double Jump")
         {
             DoubleJumpBind = KeyCode.Q;
             AltDoubleJumpBind = KeyCode.Space;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Double Jump")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Double Jump")
         {
             DoubleJumpBind = KeyCode.E;
             AltDoubleJumpBind = KeyCode.Space;
@@ -548,11 +548,11 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Enemy Leap Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Enemy Leap")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Enemy Leap")
         {
             EnemyLeapBind = KeyCode.Q;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Enemy Leap")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Enemy Leap")
         {
             EnemyLeapBind = KeyCode.E;
         }
@@ -612,11 +612,11 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Grapple Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Grapple")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Grapple")
         {
             GrappleBind = KeyCode.Q;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Grapple")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Grapple")
         {
             GrappleBind = KeyCode.E;
         }
@@ -639,11 +639,11 @@ public class SwordScript : MonoBehaviour
 
         /////////////////////////////////////// Summon Swords Logic //////////////////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Summon Swords")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Summon Swords")
         {
             SummonSwordBind = KeyCode.Q;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Summon Swords")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Summon Swords")
         {
             SummonSwordBind = KeyCode.E;
         }
@@ -723,11 +723,11 @@ public class SwordScript : MonoBehaviour
 
         ///////// Ground Slam //////////////
 
-        if (SelectedAbility1.GetChild(0).GetComponent<TMP_Text>().text == "Ground Slam")
+        if (SelectedAbility1.GetComponentInChildren<TMP_Text>().text == "Ground Slam")
         {
             GroundSlamBind = KeyCode.Q;
         }
-        else if (SelectedAbility2.GetChild(0).GetComponent<TMP_Text>().text == "Ground Slam")
+        else if (SelectedAbility2.GetComponentInChildren<TMP_Text>().text == "Ground Slam")
         {
             GroundSlamBind = KeyCode.E;
         }
