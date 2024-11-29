@@ -340,7 +340,6 @@ public class PlayerMovement : MonoBehaviour
             float WallX = transform.position.x;
             transform.position += transform.forward * WallRunForce / 100;
             //transform.position = new Vector3(WallX, transform.position.y, transform.position.z);
-            print("Send");
             StopRunningAudio = false;
             WallRunAudioManager();
         }
@@ -546,7 +545,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!WallRunningAudio && !StopRunningAudio)
         {
-            print("Lop");
             MovementSource.PlayOneShot(SlidingAudio, 0.35f);
             WallRunningAudio = true;
         }

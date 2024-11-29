@@ -13,7 +13,7 @@ public class MenuController : MonoBehaviour
     public Transform AbilityPanel;
     string AbilityToSwitch;
     Transform MenuAbilityNum;
-    Texture IconToSwitch;
+    Sprite IconToSwitch;
 
 
 
@@ -66,9 +66,9 @@ public class MenuController : MonoBehaviour
         {
             AbilityPanel.gameObject.SetActive(false);
             AbilityToSwitch = ThisButton.GetComponentInChildren<TMP_Text>().text;
-            IconToSwitch = ThisButton.GetComponentInChildren<RawImage>().texture;
+            IconToSwitch = ThisButton.GetComponent<Image>().sprite;
             MenuAbilityNum.GetComponentInChildren<TMP_Text>().text = AbilityToSwitch;
-            MenuAbilityNum.GetComponentInChildren<RawImage>().texture = IconToSwitch;
+            MenuAbilityNum.GetComponent<Image>().sprite = IconToSwitch;
 
         }
     }
