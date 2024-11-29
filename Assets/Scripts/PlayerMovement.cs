@@ -271,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
         Frictionless.staticFriction = BaseFriction;
         JumpPower = 75;
         MainGuy.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        animator.SetBool("IsSliding", false);
     }
 
     private void SlidingMovement()
